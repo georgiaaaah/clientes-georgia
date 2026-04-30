@@ -233,7 +233,6 @@ body {
   gap: 2px;
   padding: 1.25rem 3.5rem 0;
   background: var(--chassis-2);
-  border-bottom: 1px solid var(--divider);
   overflow-x: auto;
   flex-wrap: nowrap;
   -webkit-overflow-scrolling: touch;
