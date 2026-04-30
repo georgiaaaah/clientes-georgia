@@ -120,21 +120,26 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
         {/* ── PANEL HEADER ── */}
         <div className="panel-header" style={{ flexWrap: 'nowrap' }}>
           <Image src="/logo-light.svg" alt="geōrgia." width={160} height={42} priority style={{ display: 'block', flexShrink: 0 }} />
+
+          {/* badge no centro — só desktop */}
+          {project && (
+            <div className="badge-desktop-only">
+              <div className="sticker">
+                <div className="sticker-body">
+                  <span className="sticker-title">{project.name}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           <button className="btn-chassis" onClick={handleLogout} style={{ padding: '0.4rem 0.9rem', fontSize: '0.6rem', marginLeft: 'auto', flexShrink: 0 }}>
             sair
           </button>
         </div>
 
-        {/* ── PROJECT BADGE ── */}
+        {/* ── PROJECT BADGE — só mobile ── */}
         {project && (
-          <div style={{
-            padding: '1rem 3.5rem',
-            background: 'var(--chassis-2)',
-            borderBottom: '1px solid var(--divider)',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)',
-            display: 'flex',
-            justifyContent: 'center',
-          }}>
+          <div className="badge-mobile-only">
             <div className="sticker">
               <div className="sticker-body">
                 <span className="sticker-title">{project.name}</span>
