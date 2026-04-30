@@ -21,9 +21,15 @@ export default async function AdminPage() {
     .select('*, profiles(id, name, role, created_at)')
     .order('created_at', { ascending: false })
 
-  const projectList = (projects ?? []) as (Project & { profiles: Profile })[]
+  const { data: clients } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('role', 'client')
+    .order('name')
 
-  // fetch checklist for first project by default
+  const projectList = (projects ?? []) as (Project & { profiles: Profile })[]
+  const clientList  = (clients  ?? []) as Profile[]
+
   const firstProject = projectList[0] ?? null
   const { data: checklist } = firstProject
     ? await supabase
@@ -37,6 +43,7 @@ export default async function AdminPage() {
     <AdminClient
       adminProfile={profile as Profile}
       projects={projectList}
+      clients={clientList}
       initialProjectId={firstProject?.id ?? null}
       initialChecklist={(checklist ?? []) as ChecklistItem[]}
     />
