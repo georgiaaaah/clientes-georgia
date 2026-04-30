@@ -406,14 +406,25 @@ body {
   border-radius: 4px;
   width: 24px; height: 24px;
   display: flex; align-items: center; justify-content: center;
+  gap: 0.35rem;
   cursor: pointer;
   flex-shrink: 0;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 .item-send-btn:hover {
   color: var(--teal);
   background: rgba(8,236,243,0.12);
   border-color: rgba(8,236,243,0.35);
+}
+.item-send-label {
+  display: none;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+@media (min-width: 640px) {
+  .item-send-btn { width: auto; padding: 0 0.6rem; }
+  .item-send-label { display: inline; }
 }
 
 .item-file-link {

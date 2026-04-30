@@ -225,7 +225,8 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
 
                               {!isComplete && (
                                 <button className="item-send-btn" onClick={() => openModal(item)} title="enviar material">
-                                  ↑
+                                  <span>↑</span>
+                                  <span className="item-send-label">enviar</span>
                                 </button>
                               )}
                             </div>
