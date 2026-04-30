@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import type { Profile, Project, ChecklistItem } from '@/lib/types'
 import { STATUS_STEPS, CHECKLIST_DEFAULTS } from '@/lib/types'
-import { DesignSystemTab } from '@/app/components/DesignSystemTab'
+import { DesignSystemTab, EstruturaTab } from '@/app/components/DesignSystemTab'
 
 interface Props {
   adminProfile: Profile
@@ -20,7 +20,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
   const [projects, setProjects]     = useState(initialProjects)
   const [selectedId, setSelectedId] = useState<string | null>(initialProjectId)
   const [checklist, setChecklist]   = useState<ChecklistItem[]>(initialChecklist)
-  const [activeTab, setActiveTab]   = useState<'checklist' | 'design system'>('checklist')
+  const [activeTab, setActiveTab]   = useState<'checklist' | 'design system' | 'estrutura'>('checklist')
   const [loading, setLoading]       = useState(false)
   const [showForm, setShowForm]     = useState(false)
   const [newName, setNewName]       = useState('')
@@ -244,7 +244,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
         {/* ── TABS ── */}
         {selectedProject && (
           <div className="dash-tabs">
-            {(['checklist', 'design system'] as const).map(tab => (
+            {(['checklist', 'design system', 'estrutura'] as const).map(tab => (
               <button key={tab} className={`tab-btn ${activeTab === tab ? 'is-active' : ''}`} onClick={() => setActiveTab(tab)}>
                 {tab}
               </button>
@@ -267,11 +267,18 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
               <div className="empty-state">selecione um projeto acima.</div>
             )}
 
-            {/* design system tab */}
             {!loading && selectedProject && activeTab === 'design system' && (
               <DesignSystemTab
                 projectId={selectedProject.id}
                 initialUrl={(selectedProject as any).design_system_url ?? null}
+                isAdmin={true}
+              />
+            )}
+
+            {!loading && selectedProject && activeTab === 'estrutura' && (
+              <EstruturaTab
+                projectId={selectedProject.id}
+                initialUrl={(selectedProject as any).estrutura_url ?? null}
                 isAdmin={true}
               />
             )}

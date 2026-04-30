@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import type { Profile, Project, ChecklistItem } from '@/lib/types'
 import { STATUS_STEPS } from '@/lib/types'
-import { DesignSystemTab } from '@/app/components/DesignSystemTab'
+import { DesignSystemTab, EstruturaTab } from '@/app/components/DesignSystemTab'
 
 type Tab = 'materiais' | 'design system' | 'estrutura' | 'aprovacoes'
 
@@ -246,7 +246,12 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
             {activeTab === 'design system' && !project && (
               <div className="empty-state">nenhum projeto ativo ainda.</div>
             )}
-            {activeTab === 'estrutura' && <div className="empty-state">estrutura do site será publicada após o briefing.</div>}
+            {activeTab === 'estrutura' && project && (
+              <EstruturaTab projectId={project.id} initialUrl={(project as any).estrutura_url ?? null} isAdmin={isAdmin} />
+            )}
+            {activeTab === 'estrutura' && !project && (
+              <div className="empty-state">nenhum projeto ativo ainda.</div>
+            )}
             {activeTab === 'aprovacoes' && <div className="empty-state">etapas de aprovação aparecerão conforme o projeto avança.</div>}
 
           </div>
