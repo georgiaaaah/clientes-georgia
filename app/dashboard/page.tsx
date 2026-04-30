@@ -8,13 +8,21 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single()
 
-  if (!profile) redirect('/login')
+  if (!profile) {
+    return (
+      <main style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0a0a', fontFamily: 'monospace', color: '#08ECF3', flexDirection: 'column', gap: '1rem' }}>
+        <p>perfil não encontrado</p>
+        <p style={{ fontSize: '0.7rem', color: 'rgba(8,236,243,0.4)' }}>user: {user.id}</p>
+        <p style={{ fontSize: '0.7rem', color: 'rgba(8,236,243,0.4)' }}>erro: {profileError?.message}</p>
+      </main>
+    )
+  }
 
   // admin → redirect to /admin
   if (profile.role === 'admin') redirect('/admin')
