@@ -9,11 +9,35 @@ export interface Profile {
   created_at: string
 }
 
+export interface DesignSystemColor {
+  name: string
+  hex: string
+}
+
+export interface DesignSystemData {
+  typography: {
+    primary: string
+    secondary: string
+    scale: string
+  }
+  colors: DesignSystemColor[]
+  spacing: string
+  notes: string
+}
+
+export const DESIGN_SYSTEM_EMPTY: DesignSystemData = {
+  typography: { primary: '', secondary: '', scale: '' },
+  colors: [{ name: '', hex: '#000000' }],
+  spacing: '',
+  notes: '',
+}
+
 export interface Project {
   id: string
   client_id: string
   name: string
   status: ProjectStatus
+  design_system?: DesignSystemData
   created_at: string
   profiles?: Profile
 }

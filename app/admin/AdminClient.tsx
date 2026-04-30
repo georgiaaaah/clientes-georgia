@@ -4,8 +4,9 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
-import type { Profile, Project, ChecklistItem } from '@/lib/types'
-import { STATUS_STEPS, CHECKLIST_DEFAULTS } from '@/lib/types'
+import type { Profile, Project, ChecklistItem, DesignSystemData } from '@/lib/types'
+import { STATUS_STEPS, CHECKLIST_DEFAULTS, DESIGN_SYSTEM_EMPTY } from '@/lib/types'
+import { DesignSystemTab } from '@/app/components/DesignSystemTab'
 
 interface Props {
   adminProfile: Profile
@@ -19,6 +20,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
   const [projects, setProjects]     = useState(initialProjects)
   const [selectedId, setSelectedId] = useState<string | null>(initialProjectId)
   const [checklist, setChecklist]   = useState<ChecklistItem[]>(initialChecklist)
+  const [activeTab, setActiveTab]   = useState<'checklist' | 'design system'>('checklist')
   const [loading, setLoading]       = useState(false)
   const [showForm, setShowForm]     = useState(false)
   const [newName, setNewName]       = useState('')
@@ -239,6 +241,17 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
           </div>
         )}
 
+        {/* ── TABS ── */}
+        {selectedProject && (
+          <div className="dash-tabs">
+            {(['checklist', 'design system'] as const).map(tab => (
+              <button key={tab} className={`tab-btn ${activeTab === tab ? 'is-active' : ''}`} onClick={() => setActiveTab(tab)}>
+                {tab}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* ── SCREEN ── */}
         <div className="screen-interior" style={{ flex: 1 }}>
           <div className="screen-content">
@@ -254,11 +267,20 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
               <div className="empty-state">selecione um projeto acima.</div>
             )}
 
-            {!loading && selectedProject && checklist.length === 0 && (
+            {/* design system tab */}
+            {!loading && selectedProject && activeTab === 'design system' && (
+              <DesignSystemTab
+                projectId={selectedProject.id}
+                initial={(selectedProject.design_system ?? DESIGN_SYSTEM_EMPTY) as DesignSystemData}
+                isAdmin={true}
+              />
+            )}
+
+            {!loading && selectedProject && activeTab === 'checklist' && checklist.length === 0 && (
               <div className="empty-state">checklist vazio.</div>
             )}
 
-            {!loading && selectedProject && checklist.length > 0 && (
+            {!loading && selectedProject && activeTab === 'checklist' && checklist.length > 0 && (
               <>
                 {(() => {
                   const done = checklist.filter(i => i.checked_by_client || i.checked_by_admin).length

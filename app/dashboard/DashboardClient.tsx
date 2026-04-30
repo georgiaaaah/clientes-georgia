@@ -4,10 +4,11 @@ import { useState, useTransition, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
-import type { Profile, Project, ChecklistItem } from '@/lib/types'
-import { STATUS_STEPS } from '@/lib/types'
+import type { Profile, Project, ChecklistItem, DesignSystemData } from '@/lib/types'
+import { STATUS_STEPS, DESIGN_SYSTEM_EMPTY } from '@/lib/types'
+import { DesignSystemTab } from '@/app/components/DesignSystemTab'
 
-type Tab = 'materiais' | 'design' | 'estrutura' | 'aprovacoes'
+type Tab = 'materiais' | 'design system' | 'estrutura' | 'aprovacoes'
 
 interface Props {
   profile: Profile
@@ -25,6 +26,7 @@ interface ModalState {
 
 export function DashboardClient({ profile, project, checklist: initial }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('materiais')
+  const ds = (project?.design_system ?? DESIGN_SYSTEM_EMPTY) as DesignSystemData
   const [items, setItems]         = useState<ChecklistItem[]>(initial)
   const [modal, setModal]         = useState<ModalState | null>(null)
   const [, startTransition]       = useTransition()
@@ -146,7 +148,7 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
 
         {/* ── TABS ── */}
         <div className="dash-tabs">
-          {(['materiais', 'design', 'estrutura', 'aprovacoes'] as Tab[]).map(tab => (
+          {(['materiais', 'design system', 'estrutura', 'aprovacoes'] as Tab[]).map(tab => (
             <button key={tab} className={`tab-btn ${activeTab === tab ? 'is-active' : ''}`} onClick={() => setActiveTab(tab)}>
               {tab === 'aprovacoes' ? 'aprovações' : tab}
             </button>
@@ -239,7 +241,12 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
               </>
             )}
 
-            {activeTab === 'design' && <div className="empty-state">design system será publicado aqui após aprovação do layout.</div>}
+            {activeTab === 'design system' && project && (
+              <DesignSystemTab projectId={project.id} initial={ds} isAdmin={isAdmin} />
+            )}
+            {activeTab === 'design system' && !project && (
+              <div className="empty-state">nenhum projeto ativo ainda.</div>
+            )}
             {activeTab === 'estrutura' && <div className="empty-state">estrutura do site será publicada após o briefing.</div>}
             {activeTab === 'aprovacoes' && <div className="empty-state">etapas de aprovação aparecerão conforme o projeto avança.</div>}
 
