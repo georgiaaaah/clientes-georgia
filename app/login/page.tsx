@@ -40,7 +40,7 @@ export default function LoginPage() {
       router.refresh()
     } catch (err) {
       console.error('[login] exception:', err)
-      setError('erro de conexão. tente novamente.')
+      setError('e-mail ou senha incorretos.')
       setHasError(true)
       setLoading(false)
     }
