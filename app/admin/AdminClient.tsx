@@ -318,8 +318,20 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                               {' · '}
                               {item.checked_by_admin ? 'geōrgia ✓' : 'geōrgia pendente'}
                             </div>
+                            {/* conteúdo enviado pelo cliente */}
+                            {(item.note || item.file_url) && (
+                              <div className="admin-submission">
+                                {item.note && (
+                                  <p className="admin-submission-note">{item.note}</p>
+                                )}
+                                {item.file_url && (
+                                  <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="admin-submission-file">
+                                    ↗ arquivo enviado
+                                  </a>
+                                )}
+                              </div>
+                            )}
                           </div>
-                          {item.note && <span className="check-note" title={item.note}>{item.note}</span>}
                         </div>
                       )
                     })}
