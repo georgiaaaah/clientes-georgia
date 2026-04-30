@@ -21,7 +21,14 @@ let supabaseResponse = NextResponse.next({ request })
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data.user
+  } catch (err) {
+    console.error('[proxy] supabase.auth.getUser failed:', err)
+  }
+
   const { pathname } = request.nextUrl
 
   if (!user && pathname !== '/login') {
