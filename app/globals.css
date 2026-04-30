@@ -236,7 +236,6 @@ body {
   scrollbar-width: none;
 }
 .dash-tabs::-webkit-scrollbar { display: none; }
-}
 
 .tab-btn {
   font-family: var(--font-mono), 'IBM Plex Mono', monospace;
