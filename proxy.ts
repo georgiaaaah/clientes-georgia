@@ -2,12 +2,21 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
-let supabaseResponse = NextResponse.next({ request })
+  const { pathname } = request.nextUrl
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  const url  = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key  = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !key) {
+    if (pathname === '/login') return NextResponse.next()
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  let supabaseResponse = NextResponse.next({ request })
+  let user = null
+
+  try {
+    const supabase = createServerClient(url, key, {
       cookies: {
         getAll() { return request.cookies.getAll() },
         setAll(cookiesToSet) {
@@ -18,18 +27,12 @@ let supabaseResponse = NextResponse.next({ request })
           )
         },
       },
-    }
-  )
-
-  let user = null
-  try {
+    })
     const { data } = await supabase.auth.getUser()
     user = data.user
   } catch (err) {
-    console.error('[proxy] supabase.auth.getUser failed:', err)
+    console.error('[proxy] error:', err)
   }
-
-  const { pathname } = request.nextUrl
 
   if (!user && pathname !== '/login') {
     return NextResponse.redirect(new URL('/login', request.url))
