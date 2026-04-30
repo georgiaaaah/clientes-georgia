@@ -279,7 +279,7 @@ body {
   font-weight: 300;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(8,236,243,0.5);
+  color: rgba(8,236,243,0.85);
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(8,236,243,0.1);

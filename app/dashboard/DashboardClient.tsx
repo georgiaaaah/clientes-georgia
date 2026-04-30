@@ -180,7 +180,7 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                   <>
                     <div style={{ marginBottom: '1.75rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(8,236,243,0.4)', textTransform: 'uppercase' }}>progresso</span>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(8,236,243,0.85)', textTransform: 'uppercase' }}>progresso</span>
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'rgba(240,241,241,0.35)' }}>{doneItems}/{totalItems}</span>
                       </div>
                       <div style={{ width: '100%', height: '2px', background: 'rgba(255,255,255,0.06)', borderRadius: '1px', overflow: 'hidden' }}>
@@ -352,3 +352,4 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
     </main>
   )
 }
+

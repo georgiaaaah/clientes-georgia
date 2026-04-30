@@ -308,7 +308,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                   return (
                     <div style={{ marginBottom: '1.75rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(8,236,243,0.4)', textTransform: 'uppercase' }}>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(8,236,243,0.85)', textTransform: 'uppercase' }}>
                           materiais recebidos
                         </span>
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'rgba(240,241,241,0.35)' }}>
@@ -388,3 +388,4 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     </main>
   )
 }
+
