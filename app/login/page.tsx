@@ -51,53 +51,57 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* screen — only inputs here */}
-        <div className="screen-interior">
-          <div className="screen-content">
-            <form id="login-form" onSubmit={handleLogin} className="login-form" style={{ paddingBottom: 0 }}>
-              <div className="field-group">
-                <label className="field-label">e-mail</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  className="field-input"
-                  placeholder="seu@email.com"
-                  required
-                  autoComplete="email"
-                />
-              </div>
+        {/* form — envolve os dois painéis para o submit funcionar corretamente */}
+        <form onSubmit={handleLogin}>
 
-              <div className="field-group">
-                <label className="field-label">senha</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="field-input"
-                  placeholder="••••••••"
-                  required
-                  autoComplete="current-password"
-                />
-              </div>
+          {/* painel de campos — chassi claro, inputs com visual escuro embutido */}
+          <div style={{
+            padding: '1.75rem 3.5rem',
+            background: 'var(--chassis-2)',
+            borderTop: '1px solid var(--divider)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+          }}>
+            <div className="field-group">
+              <label className="field-label" style={{ color: 'var(--text-soft)' }}>e-mail</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="field-input login-input"
+                placeholder="seu@email.com"
+                required
+                autoComplete="email"
+              />
+            </div>
 
-              {error && <p className="field-error">{error}</p>}
-            </form>
+            <div className="field-group">
+              <label className="field-label" style={{ color: 'var(--text-soft)' }}>senha</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="field-input login-input"
+                placeholder="••••••••"
+                required
+                autoComplete="current-password"
+              />
+            </div>
+
+            {error && <p className="field-error">{error}</p>}
           </div>
-        </div>
 
-        {/* CTA panel — entalhe + botão igual ao "iniciar projeto" */}
-        <div className="login-cta">
-          <button
-            type="submit"
-            form="login-form"
-            className="cta-btn"
-            disabled={loading}
-          >
-            <span className="cta-led" />
-            <span className="cta-label">{loading ? 'entrando...' : 'entrar'}</span>
-          </button>
-        </div>
+          {/* CTA panel — entalhe + botão igual ao "iniciar projeto" */}
+          <div className="login-cta">
+            <button type="submit" className="cta-btn" disabled={loading}>
+              <span className="cta-led" />
+              <span className="cta-label">{loading ? 'entrando...' : 'entrar'}</span>
+            </button>
+          </div>
+
+        </form>
 
       </div>
     </main>

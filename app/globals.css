@@ -463,6 +463,19 @@ body {
 }
 .field-input::placeholder { color: rgba(240,241,241,0.2); }
 
+/* input sobre fundo claro (login) */
+.login-input {
+  background: #1a1a1a;
+  border-color: rgba(0,0,0,0.18);
+  border-bottom-color: rgba(8,236,243,0.3);
+  color: #f0f1f1;
+}
+.login-input::placeholder { color: rgba(240,241,241,0.25); }
+.login-input:focus {
+  border-color: rgba(8,236,243,0.5);
+  box-shadow: 0 0 0 1px rgba(8,236,243,0.12), 0 0 12px rgba(8,236,243,0.08);
+}
+
 .field-error {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.62rem;
