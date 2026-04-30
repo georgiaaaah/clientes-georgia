@@ -51,10 +51,10 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* screen */}
+        {/* screen — only inputs here */}
         <div className="screen-interior">
           <div className="screen-content">
-            <form onSubmit={handleLogin} className="login-form">
+            <form id="login-form" onSubmit={handleLogin} className="login-form" style={{ paddingBottom: 0 }}>
               <div className="field-group">
                 <label className="field-label">e-mail</label>
                 <input
@@ -82,16 +82,21 @@ export default function LoginPage() {
               </div>
 
               {error && <p className="field-error">{error}</p>}
-
-              <button
-                type="submit"
-                className="btn-chassis btn-chassis--teal"
-                disabled={loading}
-              >
-                {loading ? 'entrando...' : 'entrar'}
-              </button>
             </form>
           </div>
+        </div>
+
+        {/* CTA panel — entalhe + botão igual ao "iniciar projeto" */}
+        <div className="login-cta">
+          <button
+            type="submit"
+            form="login-form"
+            className="cta-btn"
+            disabled={loading}
+          >
+            <span className="cta-led" />
+            <span className="cta-label">{loading ? 'entrando...' : 'entrar'}</span>
+          </button>
         </div>
 
       </div>
