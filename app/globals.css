@@ -138,7 +138,12 @@ body {
   display: flex;
   align-items: center;
   gap: 0;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.status-bar::-webkit-scrollbar { display: none; }
 
 .status-step {
   display: flex;
@@ -151,7 +156,9 @@ body {
   text-transform: lowercase;
   color: var(--text-soft);
   flex: 1;
+  flex-shrink: 0;
   position: relative;
+  white-space: nowrap;
 }
 .status-step::after {
   content: "";
@@ -223,6 +230,12 @@ body {
   padding: 1.25rem 3.5rem 0;
   background: var(--chassis-2);
   border-bottom: 1px solid var(--divider);
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.dash-tabs::-webkit-scrollbar { display: none; }
 }
 
 .tab-btn {
@@ -242,6 +255,8 @@ body {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
   position: relative;
   bottom: -1px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .tab-btn:hover { color: var(--text-main); background: var(--chassis); }
 .tab-btn.is-active {
