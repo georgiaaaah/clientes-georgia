@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { Profile, Project, ChecklistItem } from '@/lib/types'
 import { STATUS_STEPS } from '@/lib/types'
 import { DesignSystemTab, EstruturaTab } from '@/app/components/DesignSystemTab'
+import { ApprovalsTab } from '@/app/components/ApprovalsTab'
 
 type Tab = 'materiais' | 'design system' | 'estrutura' | 'aprovacoes'
 
@@ -267,7 +268,12 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
             {activeTab === 'estrutura' && !project && (
               <div className="empty-state">nenhum projeto ativo ainda.</div>
             )}
-            {activeTab === 'aprovacoes' && <div className="empty-state">etapas de aprovação aparecerão conforme o projeto avança.</div>}
+            {activeTab === 'aprovacoes' && project && (
+              <ApprovalsTab projectId={project.id} isAdmin={isAdmin} />
+            )}
+            {activeTab === 'aprovacoes' && !project && (
+              <div className="empty-state">nenhum projeto ativo ainda.</div>
+            )}
 
           </div>
         </div>

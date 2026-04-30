@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { Profile, Project, ChecklistItem } from '@/lib/types'
 import { STATUS_STEPS, CHECKLIST_DEFAULTS } from '@/lib/types'
 import { DesignSystemTab, EstruturaTab } from '@/app/components/DesignSystemTab'
+import { ApprovalsTab } from '@/app/components/ApprovalsTab'
 
 interface Props {
   adminProfile: Profile
@@ -20,7 +21,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
   const [projects, setProjects]     = useState(initialProjects)
   const [selectedId, setSelectedId] = useState<string | null>(initialProjectId)
   const [checklist, setChecklist]   = useState<ChecklistItem[]>(initialChecklist)
-  const [activeTab, setActiveTab]   = useState<'checklist' | 'design system' | 'estrutura'>('checklist')
+  const [activeTab, setActiveTab]   = useState<'checklist' | 'design system' | 'estrutura' | 'aprovações'>('checklist')
   const [loading, setLoading]       = useState(false)
   const [showForm, setShowForm]     = useState(false)
   const [newName, setNewName]       = useState('')
@@ -244,7 +245,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
         {/* ── TABS ── */}
         {selectedProject && (
           <div className="dash-tabs">
-            {(['checklist', 'design system', 'estrutura'] as const).map(tab => (
+            {(['checklist', 'design system', 'estrutura', 'aprovações'] as const).map(tab => (
               <button key={tab} className={`tab-btn ${activeTab === tab ? 'is-active' : ''}`} onClick={() => setActiveTab(tab)}>
                 {tab}
               </button>
@@ -281,6 +282,10 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                 initialUrl={(selectedProject as any).estrutura_url ?? null}
                 isAdmin={true}
               />
+            )}
+
+            {!loading && selectedProject && activeTab === 'aprovações' && (
+              <ApprovalsTab projectId={selectedProject.id} isAdmin={true} />
             )}
 
             {!loading && selectedProject && activeTab === 'checklist' && checklist.length === 0 && (

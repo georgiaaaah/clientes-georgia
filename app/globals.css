@@ -1026,6 +1026,100 @@ body {
   text-align: center;
 }
 
+/* ── APPROVALS ── */
+.approval-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color 0.15s ease;
+}
+.approval-card:has(.approval-led[style*="25D366"]) {
+  border-color: rgba(37,211,102,0.15);
+}
+.approval-card:has(.approval-led[style*="DE0538"]) {
+  border-color: rgba(222,5,56,0.15);
+}
+
+.approval-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.approval-title {
+  font-family: var(--font-epilogue), sans-serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: rgba(240,241,241,0.92);
+  line-height: 1.4;
+}
+
+.approval-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.58rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: rgba(240,241,241,0.35);
+}
+
+.approval-led {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 4px 1px currentColor;
+}
+
+.approval-desc {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  font-weight: 300;
+  color: rgba(240,241,241,0.5);
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.approval-link {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  color: var(--teal);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  align-self: flex-start;
+  transition: opacity 0.15s ease;
+}
+.approval-link:hover { opacity: 0.7; }
+
+.approval-comment {
+  background: rgba(222,5,56,0.06);
+  border-left: 2px solid rgba(222,5,56,0.3);
+  border-radius: 0 4px 4px 0;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.approval-comment-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: rgba(222,5,56,0.5);
+  text-transform: uppercase;
+}
+.approval-comment-text {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  color: rgba(240,241,241,0.65);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
 /* ── BADGE RESPONSIVO ── */
 .badge-desktop-only {
   display: none;
