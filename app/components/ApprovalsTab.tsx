@@ -46,11 +46,12 @@ export function ApprovalsTab({ projectId, isAdmin }: Props) {
   const supabase = createClient()
 
   async function fetchItems() {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('approvals')
       .select('*')
       .eq('project_id', projectId)
       .order('order_index')
+    if (error) console.error('[approvals] fetch failed:', error)
     setItems(data ?? [])
   }
 
@@ -94,7 +95,8 @@ export function ApprovalsTab({ projectId, isAdmin }: Props) {
 
   async function respond(id: string, status: 'aprovado' | 'ajuste', clientComment?: string) {
     const update = { status, client_comment: clientComment ?? null }
-    await supabase.from('approvals').update(update).eq('id', id)
+    const { error } = await supabase.from('approvals').update(update).eq('id', id)
+    if (error) { console.error('[approvals] update failed:', error); return }
     setItems(prev => prev.map(i => i.id === id ? { ...i, ...update } : i))
     setCommenting(null)
     setComment('')
