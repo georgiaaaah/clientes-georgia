@@ -110,6 +110,9 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     <main className="page-wrap">
       <div className="device" style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100dvh - 5rem)' }}>
 
+        {/* ── CHASSIS PANELS (com madeira) ── */}
+        <div className="chassis-body">
+
         {/* ── PANEL HEADER ── */}
         <div className="panel-header">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -256,7 +259,9 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
           </div>
         )}
 
-        {/* ── SCREEN ── */}
+        </div>{/* fim .chassis-body */}
+
+        {/* ── SCREEN (sem madeira) ── */}
         <div className="screen-interior" style={{ flex: 1 }}>
           <div className="screen-content">
             {loading && <div className="empty-state">carregando...</div>}

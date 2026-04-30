@@ -118,13 +118,26 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
     <main className="page-wrap">
       <div className="device" style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100dvh - 5rem)' }}>
 
-        {/* ── PANEL HEADER ── */}
-        <div className="panel-header" style={{ flexWrap: 'nowrap' }}>
-          <Image src="/logo-light.svg" alt="geōrgia." width={160} height={42} priority style={{ display: 'block', flexShrink: 0 }} />
+        {/* ── CHASSIS PANELS (com madeira) ── */}
+        <div className="chassis-body">
+          <div className="panel-header" style={{ flexWrap: 'nowrap' }}>
+            <Image src="/logo-light.svg" alt="geōrgia." width={160} height={42} priority style={{ display: 'block', flexShrink: 0 }} />
+            {project && (
+              <div className="badge-desktop-only">
+                <div className="sticker">
+                  <div className="sticker-body">
+                    <span className="sticker-title">{project.name}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+            <button className="btn-chassis" onClick={handleLogout} style={{ padding: '0.4rem 0.9rem', fontSize: '0.6rem', marginLeft: 'auto', flexShrink: 0 }}>
+              sair
+            </button>
+          </div>
 
-          {/* badge no centro — só desktop */}
           {project && (
-            <div className="badge-desktop-only">
+            <div className="badge-mobile-only">
               <div className="sticker">
                 <div className="sticker-body">
                   <span className="sticker-title">{project.name}</span>
@@ -133,44 +146,27 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
             </div>
           )}
 
-          <button className="btn-chassis" onClick={handleLogout} style={{ padding: '0.4rem 0.9rem', fontSize: '0.6rem', marginLeft: 'auto', flexShrink: 0 }}>
-            sair
-          </button>
-        </div>
-
-        {/* ── PROJECT BADGE — só mobile ── */}
-        {project && (
-          <div className="badge-mobile-only">
-            <div className="sticker">
-              <div className="sticker-body">
-                <span className="sticker-title">{project.name}</span>
-              </div>
+          {project && (
+            <div className="status-bar">
+              {STATUS_STEPS.map((step, i) => (
+                <div key={step.key} className={`status-step ${i < statusIndex ? 'is-done' : ''} ${i === statusIndex ? 'is-active' : ''}`}>
+                  <span className="status-dot" />
+                  {step.label}
+                </div>
+              ))}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ── STATUS BAR ── */}
-        {project && (
-          <div className="status-bar">
-            {STATUS_STEPS.map((step, i) => (
-              <div key={step.key} className={`status-step ${i < statusIndex ? 'is-done' : ''} ${i === statusIndex ? 'is-active' : ''}`}>
-                <span className="status-dot" />
-                {step.label}
-              </div>
+          <div className="dash-tabs">
+            {(['materiais', 'design system', 'estrutura', 'aprovacoes'] as Tab[]).map(tab => (
+              <button key={tab} className={`tab-btn ${activeTab === tab ? 'is-active' : ''}`} onClick={() => setActiveTab(tab)}>
+                {tab === 'aprovacoes' ? 'aprovações' : tab}
+              </button>
             ))}
           </div>
-        )}
-
-        {/* ── TABS ── */}
-        <div className="dash-tabs">
-          {(['materiais', 'design system', 'estrutura', 'aprovacoes'] as Tab[]).map(tab => (
-            <button key={tab} className={`tab-btn ${activeTab === tab ? 'is-active' : ''}`} onClick={() => setActiveTab(tab)}>
-              {tab === 'aprovacoes' ? 'aprovações' : tab}
-            </button>
-          ))}
         </div>
 
-        {/* ── SCREEN ── */}
+        {/* ── SCREEN (sem madeira) ── */}
         <div className="screen-interior" style={{ flex: 1 }}>
           <div className="screen-content">
 
