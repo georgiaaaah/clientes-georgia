@@ -33,25 +33,36 @@ const STATUS_COLOR: Record<Approval['status'], string> = {
 }
 
 export function ApprovalsTab({ projectId, isAdmin }: Props) {
-  const [items, setItems]       = useState<Approval[]>([])
-  const [loading, setLoading]   = useState(true)
+  const [items, setItems]           = useState<Approval[]>([])
+  const [loading, setLoading]       = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
   const [commenting, setCommenting] = useState<string | null>(null)
-  const [comment, setComment]   = useState('')
-  const [newTitle, setNewTitle] = useState('')
-  const [newDesc, setNewDesc]   = useState('')
-  const [newLink, setNewLink]   = useState('')
-  const [adding, setAdding]     = useState(false)
-  const [showForm, setShowForm] = useState(false)
+  const [comment, setComment]       = useState('')
+  const [newTitle, setNewTitle]     = useState('')
+  const [newDesc, setNewDesc]       = useState('')
+  const [newLink, setNewLink]       = useState('')
+  const [adding, setAdding]         = useState(false)
+  const [showForm, setShowForm]     = useState(false)
   const supabase = createClient()
 
-  useEffect(() => {
-    supabase
+  async function fetchItems() {
+    const { data } = await supabase
       .from('approvals')
       .select('*')
       .eq('project_id', projectId)
       .order('order_index')
-      .then(({ data }) => { setItems(data ?? []); setLoading(false) })
+    setItems(data ?? [])
+  }
+
+  useEffect(() => {
+    fetchItems().then(() => setLoading(false))
   }, [projectId])
+
+  async function handleRefresh() {
+    setRefreshing(true)
+    await fetchItems()
+    setRefreshing(false)
+  }
 
   async function addItem(e: React.FormEvent) {
     e.preventDefault()
@@ -97,7 +108,16 @@ export function ApprovalsTab({ projectId, isAdmin }: Props) {
       {/* ADMIN: form para adicionar item */}
       {isAdmin && (
         <div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: showForm ? '1rem' : 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginBottom: showForm ? '1rem' : 0 }}>
+            <button
+              className="btn-chassis"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              style={{ fontSize: '0.6rem', padding: '0.4rem 0.75rem' }}
+              title="atualizar respostas do cliente"
+            >
+              {refreshing ? '...' : '↻'}
+            </button>
             <button
               className="btn-chassis"
               onClick={() => setShowForm(v => !v)}
