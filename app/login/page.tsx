@@ -10,24 +10,38 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError]       = useState('')
   const [loading, setLoading]   = useState(false)
+  const [hasError, setHasError] = useState(false)
   const router = useRouter()
+
+  function clearError() {
+    if (hasError) { setHasError(false); setError('') }
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
+    if (loading) return
     setLoading(true)
     setError('')
+    setHasError(false)
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (error) {
-      setError('e-mail ou senha incorretos.')
+      if (error) {
+        setError('e-mail ou senha incorretos.')
+        setHasError(true)
+        setLoading(false)
+        return
+      }
+
+      router.push('/dashboard')
+      router.refresh()
+    } catch {
+      setError('erro de conexão. tente novamente.')
+      setHasError(true)
       setLoading(false)
-      return
     }
-
-    router.push('/dashboard')
-    router.refresh()
   }
 
   return (
@@ -65,11 +79,11 @@ export default function LoginPage() {
             gap: '1rem',
           }}>
             <div className="field-group">
-              <label className="field-label" style={{ color: 'var(--text-soft)' }}>e-mail</label>
+              <label className="field-label login-label">e-mail</label>
               <input
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={e => { setEmail(e.target.value); clearError() }}
                 className="field-input login-input"
                 placeholder="seu@email.com"
                 required
@@ -78,11 +92,11 @@ export default function LoginPage() {
             </div>
 
             <div className="field-group">
-              <label className="field-label" style={{ color: 'var(--text-soft)' }}>senha</label>
+              <label className="field-label login-label">senha</label>
               <input
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={e => { setPassword(e.target.value); clearError() }}
                 className="field-input login-input"
                 placeholder="••••••••"
                 required
@@ -95,8 +109,12 @@ export default function LoginPage() {
 
           {/* CTA panel — entalhe + botão igual ao "iniciar projeto" */}
           <div className="login-cta">
-            <button type="submit" className="cta-btn" disabled={loading}>
-              <span className="cta-led" />
+            <button
+              type="submit"
+              className="cta-btn"
+              style={loading ? { pointerEvents: 'none' } : {}}
+            >
+              <span className={`cta-led${hasError ? ' cta-led--error' : ''}`} />
               <span className="cta-label">{loading ? 'entrando...' : 'entrar'}</span>
             </button>
           </div>

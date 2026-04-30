@@ -463,6 +463,24 @@ body {
 }
 .field-input::placeholder { color: rgba(240,241,241,0.2); }
 
+/* label maior no login */
+.login-label {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--text-mid);
+  letter-spacing: 0.15em;
+}
+
+/* LED vermelho no erro */
+.cta-led--error {
+  background: radial-gradient(circle at 35% 35%, #ff7070 0%, #DE0538 45%, #8a0020 100%);
+  box-shadow:
+    0 0 5px 2px rgba(222,5,56,0.6),
+    0 0 10px 3px rgba(222,5,56,0.2),
+    inset 0 -1px 1px rgba(0,0,0,0.4);
+  animation: none;
+}
+
 /* input sobre fundo claro (login) */
 .login-input {
   background: #1a1a1a;
