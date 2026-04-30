@@ -4,8 +4,8 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
-import type { Profile, Project, ChecklistItem, DesignSystemData } from '@/lib/types'
-import { STATUS_STEPS, CHECKLIST_DEFAULTS, DESIGN_SYSTEM_EMPTY } from '@/lib/types'
+import type { Profile, Project, ChecklistItem } from '@/lib/types'
+import { STATUS_STEPS, CHECKLIST_DEFAULTS } from '@/lib/types'
 import { DesignSystemTab } from '@/app/components/DesignSystemTab'
 
 interface Props {
@@ -271,7 +271,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
             {!loading && selectedProject && activeTab === 'design system' && (
               <DesignSystemTab
                 projectId={selectedProject.id}
-                initial={(selectedProject.design_system ?? DESIGN_SYSTEM_EMPTY) as DesignSystemData}
+                initialUrl={(selectedProject as any).design_system_url ?? null}
                 isAdmin={true}
               />
             )}
