@@ -468,7 +468,7 @@ body {
   background: #1a1a1a;
   border-color: rgba(0,0,0,0.18);
   border-bottom-color: rgba(8,236,243,0.3);
-  color: #f0f1f1;
+  color: var(--teal);
 }
 .login-input::placeholder { color: rgba(240,241,241,0.25); }
 .login-input:focus {
