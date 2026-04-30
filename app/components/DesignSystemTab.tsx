@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 interface Props {
@@ -10,11 +10,20 @@ interface Props {
 }
 
 export function DesignSystemTab({ projectId, initialUrl, isAdmin }: Props) {
-  const [url, setUrl]         = useState<string | null>(initialUrl)
+  const [url, setUrl]           = useState<string | null>(initialUrl)
+  const [htmlContent, setHtmlContent] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
-  const [error, setError]     = useState('')
-  const fileInputRef          = useRef<HTMLInputElement>(null)
-  const supabase              = createClient()
+  const [error, setError]       = useState('')
+  const fileInputRef            = useRef<HTMLInputElement>(null)
+  const supabase                = createClient()
+
+  useEffect(() => {
+    if (!url) return
+    fetch(url)
+      .then(r => r.text())
+      .then(html => setHtmlContent(html))
+      .catch(() => setError('erro ao carregar o design system.'))
+  }, [url])
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -64,10 +73,10 @@ export function DesignSystemTab({ projectId, initialUrl, isAdmin }: Props) {
     return (
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', margin: '-2rem -3.5rem -2.5rem' }}>
         <iframe
-          src={url}
+          srcDoc={htmlContent ?? ''}
           style={{ flex: 1, border: 'none', width: '100%', minHeight: '600px' }}
           title="Design System"
-          sandbox="allow-scripts allow-same-origin allow-popups"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         />
       </div>
     )
@@ -130,10 +139,10 @@ export function DesignSystemTab({ projectId, initialUrl, isAdmin }: Props) {
             preview
           </div>
           <iframe
-            src={url}
+            srcDoc={htmlContent ?? ''}
             style={{ width: '100%', minHeight: '500px', border: 'none', display: 'block' }}
             title="Design System Preview"
-            sandbox="allow-scripts allow-same-origin allow-popups"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
           />
         </div>
       )}
