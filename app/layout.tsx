@@ -1,5 +1,20 @@
 import type { Metadata } from 'next'
+import { Epilogue, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
+
+const epilogue = Epilogue({
+  subsets: ['latin'],
+  weight: ['200', '300', '400', '600', '700'],
+  variable: '--font-epilogue',
+  display: 'block',
+})
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['300', '400'],
+  variable: '--font-mono',
+  display: 'block',
+})
 
 export const metadata: Metadata = {
   title: 'geōrgia. — área do cliente',
@@ -8,15 +23,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Epilogue:wght@200;300;400;600;700&family=IBM+Plex+Mono:wght@300;400&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="pt-BR" className={`${epilogue.variable} ${ibmPlexMono.variable}`}>
       <body>{children}</body>
     </html>
   )
