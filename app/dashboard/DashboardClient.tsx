@@ -118,20 +118,30 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
       <div className="device" style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100dvh - 5rem)' }}>
 
         {/* ── PANEL HEADER ── */}
-        <div className="panel-header">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-            <Image src="/logo-light.svg" alt="geōrgia." width={160} height={42} priority style={{ display: 'block' }} />
-            <span className="tagline-sub">{project ? project.name : 'área do cliente'}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: 'auto' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', fontWeight: 300, letterSpacing: '0.08em', color: 'var(--text-soft)' }}>
-              {profile.name}
-            </span>
-            <button className="btn-chassis" onClick={handleLogout} style={{ padding: '0.4rem 0.9rem', fontSize: '0.6rem' }}>
-              sair
-            </button>
-          </div>
+        <div className="panel-header" style={{ flexWrap: 'nowrap' }}>
+          <Image src="/logo-light.svg" alt="geōrgia." width={160} height={42} priority style={{ display: 'block', flexShrink: 0 }} />
+          <button className="btn-chassis" onClick={handleLogout} style={{ padding: '0.4rem 0.9rem', fontSize: '0.6rem', marginLeft: 'auto', flexShrink: 0 }}>
+            sair
+          </button>
         </div>
+
+        {/* ── PROJECT BADGE ── */}
+        {project && (
+          <div style={{
+            padding: '1rem 3.5rem',
+            background: 'var(--chassis-2)',
+            borderBottom: '1px solid var(--divider)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)',
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+            <div className="sticker">
+              <div className="sticker-body">
+                <span className="sticker-title">{project.name}</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── STATUS BAR ── */}
         {project && (
