@@ -90,6 +90,7 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
       note: modal.note || null,
       file_url: fileUrl,
       checked_by_client: true,
+      admin_note: null,
     }
 
     const { error: dbErr } = await supabase
@@ -233,6 +234,12 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                                   <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="item-file-link">
                                     ↗ arquivo enviado
                                   </a>
+                                )}
+                                {item.admin_note && !item.checked_by_client && (
+                                  <div className="client-admin-note">
+                                    <span className="client-admin-note-label">⚠ geōrgia solicitou ajuste</span>
+                                    <p className="client-admin-note-text">{item.admin_note}</p>
+                                  </div>
                                 )}
                               </div>
 

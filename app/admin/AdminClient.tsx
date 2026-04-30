@@ -18,16 +18,19 @@ interface Props {
 }
 
 export function AdminClient({ adminProfile, projects: initialProjects, clients, initialProjectId, initialChecklist }: Props) {
-  const [projects, setProjects]     = useState(initialProjects)
-  const [selectedId, setSelectedId] = useState<string | null>(initialProjectId)
-  const [checklist, setChecklist]   = useState<ChecklistItem[]>(initialChecklist)
-  const [activeTab, setActiveTab]   = useState<'checklist' | 'design system' | 'estrutura' | 'aprovações'>('checklist')
-  const [loading, setLoading]       = useState(false)
-  const [showForm, setShowForm]     = useState(false)
-  const [newName, setNewName]       = useState('')
+  const [projects, setProjects]       = useState(initialProjects)
+  const [selectedId, setSelectedId]   = useState<string | null>(initialProjectId)
+  const [checklist, setChecklist]     = useState<ChecklistItem[]>(initialChecklist)
+  const [activeTab, setActiveTab]     = useState<'checklist' | 'design system' | 'estrutura' | 'aprovações'>('checklist')
+  const [loading, setLoading]         = useState(false)
+  const [showForm, setShowForm]       = useState(false)
+  const [newName, setNewName]         = useState('')
   const [newClientId, setNewClientId] = useState(clients[0]?.id ?? '')
-  const [saving, setSaving]         = useState(false)
-  const [, startTransition]         = useTransition()
+  const [saving, setSaving]           = useState(false)
+  const [noteItem, setNoteItem]       = useState<ChecklistItem | null>(null)
+  const [noteText, setNoteText]       = useState('')
+  const [noteSending, setNoteSending] = useState(false)
+  const [, startTransition]           = useTransition()
   const router   = useRouter()
   const supabase = createClient()
 
@@ -98,6 +101,20 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     setNewName('')
     setShowForm(false)
     setSaving(false)
+  }
+
+  async function sendNote(e: React.FormEvent) {
+    e.preventDefault()
+    if (!noteItem || !noteText.trim()) return
+    setNoteSending(true)
+    const update = { admin_note: noteText.trim(), checked_by_client: false, checked_by_admin: false }
+    const { error } = await supabase.from('checklist_items').update(update).eq('id', noteItem.id)
+    if (!error) {
+      setChecklist(prev => prev.map(i => i.id === noteItem.id ? { ...i, ...update } : i))
+      setNoteItem(null)
+      setNoteText('')
+    }
+    setNoteSending(false)
   }
 
   async function handleLogout() {
@@ -360,20 +377,32 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                               {' · '}
                               {item.checked_by_admin ? 'geōrgia ✓' : 'geōrgia pendente'}
                             </div>
-                            {/* conteúdo enviado pelo cliente */}
                             {(item.note || item.file_url) && (
                               <div className="admin-submission">
-                                {item.note && (
-                                  <p className="admin-submission-note">{item.note}</p>
-                                )}
+                                {item.note && <p className="admin-submission-note">{item.note}</p>}
                                 {item.file_url && (
-                                  <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="admin-submission-file">
-                                    ↗ arquivo enviado
-                                  </a>
+                                  <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="admin-submission-file">↗ arquivo enviado</a>
                                 )}
                               </div>
                             )}
+                            {item.admin_note && (
+                              <div className="admin-sent-note">
+                                <span className="admin-sent-note-label">notificação enviada</span>
+                                <p className="admin-sent-note-text">{item.admin_note}</p>
+                              </div>
+                            )}
                           </div>
+
+                          {/* botão pedir reenvio */}
+                          {item.checked_by_client && (
+                            <button
+                              className="resubmit-btn"
+                              onClick={() => { setNoteItem(item); setNoteText('') }}
+                              title="pedir reenvio"
+                            >
+                              ↵
+                            </button>
+                          )}
                         </div>
                       )
                     })}
@@ -385,6 +414,44 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
         </div>
 
       </div>
+
+      {/* ── MODAL PEDIR REENVIO ── */}
+      {noteItem && (
+        <div className="modal-overlay" onClick={() => setNoteItem(null)}>
+          <div className="modal-panel" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">{noteItem.label}</span>
+              <button className="modal-close" onClick={() => setNoteItem(null)}>✕</button>
+            </div>
+            <form onSubmit={sendNote} className="modal-body">
+              <div className="field-group">
+                <label className="field-label" style={{ color: 'rgba(8,236,243,0.6)', letterSpacing: '0.2em' }}>
+                  mensagem para o cliente
+                </label>
+                <textarea
+                  className="modal-textarea"
+                  value={noteText}
+                  onChange={e => setNoteText(e.target.value)}
+                  placeholder="ex: o arquivo está corrompido, por favor reenvie em PNG..."
+                  rows={4}
+                  autoFocus
+                  required
+                />
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-chassis" onClick={() => setNoteItem(null)} style={{ fontSize: '0.62rem', padding: '0.5rem 1rem' }}>
+                  cancelar
+                </button>
+                <button type="submit" className="cta-btn" disabled={noteSending || !noteText.trim()}>
+                  <span className="cta-led" style={{ background: '#DE0538', boxShadow: '0 0 5px 2px rgba(222,5,56,0.5)', animation: 'none' }} />
+                  <span className="cta-label">{noteSending ? 'enviando...' : 'pedir reenvio'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </main>
   )
 }

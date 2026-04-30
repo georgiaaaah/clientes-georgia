@@ -444,6 +444,77 @@ body {
   .item-send-label { display: inline; }
 }
 
+/* ── RESUBMIT BUTTON (admin) ── */
+.resubmit-btn {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  color: rgba(222,5,56,0.5);
+  background: rgba(222,5,56,0.06);
+  border: 1px solid rgba(222,5,56,0.15);
+  border-radius: 4px;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.resubmit-btn:hover {
+  color: #DE0538;
+  background: rgba(222,5,56,0.12);
+  border-color: rgba(222,5,56,0.35);
+}
+
+/* nota enviada pelo admin (vista no admin) */
+.admin-sent-note {
+  margin-top: 0.35rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(222,5,56,0.05);
+  border-left: 2px solid rgba(222,5,56,0.3);
+  border-radius: 0 3px 3px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.admin-sent-note-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  color: rgba(222,5,56,0.5);
+  text-transform: uppercase;
+}
+.admin-sent-note-text {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  color: rgba(240,241,241,0.5);
+  line-height: 1.5;
+}
+
+/* notificação do admin (vista pelo cliente) */
+.client-admin-note {
+  margin-top: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,170,0,0.06);
+  border-left: 2px solid rgba(255,170,0,0.4);
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.client-admin-note-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  color: rgba(255,170,0,0.7);
+  text-transform: uppercase;
+}
+.client-admin-note-text {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  color: rgba(240,241,241,0.75);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
 /* ── ADMIN SUBMISSION VIEW ── */
 .admin-submission {
   margin-top: 0.5rem;
