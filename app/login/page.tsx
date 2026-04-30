@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
@@ -34,9 +35,20 @@ export default function LoginPage() {
       <div className="device device--sm">
 
         {/* header */}
-        <div className="panel-header" style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <span className="logo-text">geōrgia.</span>
-          <span className="tagline-sub">área do cliente</span>
+        <div className="panel-header" style={{ flexDirection: 'column', alignItems: 'center', gap: '1.25rem', padding: '1.75rem 3.5rem' }}>
+          <Image
+            src="/logo-light.svg"
+            alt="geōrgia."
+            width={200}
+            height={52}
+            priority
+            style={{ display: 'block' }}
+          />
+          <div className="sticker">
+            <div className="sticker-body">
+              <span className="sticker-title">área do cliente</span>
+            </div>
+          </div>
         </div>
 
         {/* screen */}

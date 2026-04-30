@@ -498,6 +498,82 @@ body {
   letter-spacing: 0.1em;
 }
 
+/* ── STICKER / BADGE ── */
+.sticker {
+  position: relative;
+  display: inline-block;
+  transform: rotate(-1deg);
+  filter:
+    drop-shadow(1.5px 2.5px 2px rgba(0,0,0,0.22))
+    drop-shadow(0.5px 1px 0px rgba(0,0,0,0.16))
+    drop-shadow(-0.5px -0.3px 0.5px rgba(0,0,0,0.04));
+}
+.sticker::before {
+  content: "";
+  position: absolute;
+  left: 4px; bottom: 1px;
+  width: 28px; height: 8px;
+  background: linear-gradient(to bottom right, transparent 40%, rgba(0,0,0,0.18) 60%, rgba(0,0,0,0.06) 100%);
+  border-radius: 0 0 14px 14px;
+  filter: blur(2px);
+  transform: skewY(2deg);
+  pointer-events: none;
+  z-index: -1;
+}
+.sticker-body {
+  position: relative;
+  padding: 0.75rem 1.6rem 0.7rem;
+  background: linear-gradient(115deg,
+    #e8e0f0 0%, #c0d8f8 8%, #b8f0e8 18%, #e0f0b8 28%,
+    #f8e0c0 38%, #f0c8d8 48%, #d8c0f8 58%,
+    #b8e0f8 68%, #c8f8e0 78%, #f0e8b8 88%, #e8c8f0 100%
+  );
+  border-radius: 14px;
+  overflow: hidden;
+  animation: holo-shift 6s ease-in-out infinite alternate;
+}
+@keyframes holo-shift {
+  0%   { filter: hue-rotate(0deg)   brightness(1.1) saturate(1.4) contrast(1.05); }
+  25%  { filter: hue-rotate(60deg)  brightness(1.15) saturate(1.5) contrast(1.08); }
+  50%  { filter: hue-rotate(-45deg) brightness(1.12) saturate(1.45) contrast(1.06); }
+  75%  { filter: hue-rotate(90deg)  brightness(1.08) saturate(1.35) contrast(1.04); }
+  100% { filter: hue-rotate(-20deg) brightness(1.1) saturate(1.4) contrast(1.05); }
+}
+.sticker-body::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 9px;
+  border: 2px solid rgba(10,8,20,0.75);
+  pointer-events: none;
+  z-index: 3;
+}
+.sticker-body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(100deg, rgba(255,255,255,0.0) 0px, rgba(255,255,255,0.35) 1px, rgba(255,255,255,0.0) 2px, rgba(255,255,255,0.0) 4px),
+    repeating-linear-gradient(10deg,  rgba(255,255,255,0.0) 0px, rgba(255,255,255,0.15) 1px, rgba(255,255,255,0.0) 2px, rgba(255,255,255,0.0) 5px),
+    linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.0) 40%, rgba(255,255,255,0.2) 60%, rgba(255,255,255,0.0) 100%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 2;
+}
+.sticker-title {
+  font-family: 'Epilogue', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #0d0d1a;
+  text-align: center;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
 /* ── MOBILE ── */
 @media (max-width: 600px) {
   .page-wrap { padding: 1rem 0.75rem 2rem; }
