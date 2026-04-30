@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import type { Profile, Project, ChecklistItem } from '@/lib/types'
 import { STATUS_STEPS } from '@/lib/types'
@@ -69,7 +70,7 @@ export function AdminClient({ adminProfile, projects, initialProjectId, initialC
         {/* ── PANEL HEADER ── */}
         <div className="panel-header">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-            <span className="logo-text">geōrgia.</span>
+            <Image src="/logo-light.svg" alt="geōrgia." width={160} height={42} priority style={{ display: 'block' }} />
             <span className="tagline-sub">painel admin</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: 'auto' }}>
