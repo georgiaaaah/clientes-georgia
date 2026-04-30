@@ -131,10 +131,13 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)',
           display: 'flex',
           gap: '0.5rem',
-          flexWrap: 'wrap',
+          flexWrap: 'nowrap',
           alignItems: 'center',
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none' as const,
         }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.2em', color: 'var(--text-soft)', textTransform: 'uppercase', marginRight: '0.25rem' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.2em', color: 'var(--text-soft)', textTransform: 'uppercase', flexShrink: 0 }}>
             projeto:
           </span>
 
@@ -143,7 +146,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
               key={p.id}
               className={`tab-btn ${selectedId === p.id ? 'is-active' : ''}`}
               onClick={() => selectProject(p.id)}
-              style={{ bottom: 0, borderRadius: '4px', borderBottom: '1px solid rgba(0,0,0,0.1)' }}
+              style={{ bottom: 0, borderRadius: '4px', borderBottom: '1px solid rgba(0,0,0,0.1)', flexShrink: 0, whiteSpace: 'nowrap' }}
             >
               {p.name} — {p.profiles?.name ?? '—'}
             </button>
@@ -152,7 +155,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
           <button
             className="btn-chassis"
             onClick={() => setShowForm(v => !v)}
-            style={{ padding: '0.35rem 0.8rem', fontSize: '0.6rem', marginLeft: 'auto' }}
+            style={{ padding: '0.35rem 0.8rem', fontSize: '0.6rem', marginLeft: 'auto', flexShrink: 0, whiteSpace: 'nowrap' }}
           >
             {showForm ? '✕ cancelar' : '+ novo projeto'}
           </button>
