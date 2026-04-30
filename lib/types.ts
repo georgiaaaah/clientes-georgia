@@ -57,7 +57,7 @@ export interface ChecklistItem {
 export const STATUS_STEPS: { key: ProjectStatus; label: string }[] = [
   { key: 'briefing',      label: 'briefing'      },
   { key: 'design',        label: 'design'        },
-  { key: 'desenvolvimento', label: 'dev'          },
+  { key: 'desenvolvimento', label: 'desenvolvimento' },
   { key: 'revisao',       label: 'revisão'       },
   { key: 'entregue',      label: 'entregue'      },
 ]
