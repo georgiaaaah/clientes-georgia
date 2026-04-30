@@ -29,6 +29,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
 
       if (error) {
+        console.error('[login] auth error:', error.message)
         setError('e-mail ou senha incorretos.')
         setHasError(true)
         setLoading(false)
@@ -37,7 +38,8 @@ export default function LoginPage() {
 
       router.push('/dashboard')
       router.refresh()
-    } catch {
+    } catch (err) {
+      console.error('[login] exception:', err)
       setError('erro de conexão. tente novamente.')
       setHasError(true)
       setLoading(false)
@@ -114,7 +116,14 @@ export default function LoginPage() {
               className="cta-btn"
               style={loading ? { pointerEvents: 'none' } : {}}
             >
-              <span className={`cta-led${hasError ? ' cta-led--error' : ''}`} />
+              <span
+                className="cta-led"
+                style={hasError ? {
+                  background: 'radial-gradient(circle at 35% 35%, #ff7070 0%, #DE0538 45%, #8a0020 100%)',
+                  boxShadow: '0 0 5px 2px rgba(222,5,56,0.6), 0 0 10px 3px rgba(222,5,56,0.2), inset 0 -1px 1px rgba(0,0,0,0.4)',
+                  animation: 'none',
+                } : {}}
+              />
               <span className="cta-label">{loading ? 'entrando...' : 'entrar'}</span>
             </button>
           </div>
