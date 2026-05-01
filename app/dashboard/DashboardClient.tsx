@@ -28,6 +28,7 @@ interface ModalState {
 export function DashboardClient({ profile, project, checklist: initial }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('materiais')
   const [items, setItems]         = useState<ChecklistItem[]>(initial)
+  const [refreshing, setRefreshing] = useState(false)
   const [modal, setModal]         = useState<ModalState | null>(null)
   const [, startTransition]       = useTransition()
   const fileInputRef              = useRef<HTMLInputElement>(null)
@@ -55,6 +56,18 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
     startTransition(async () => {
       await supabase.from('checklist_items').update({ checked_by_admin: next }).eq('id', item.id)
     })
+  }
+
+  async function refreshChecklist() {
+    if (!project) return
+    setRefreshing(true)
+    const { data } = await supabase
+      .from('checklist_items')
+      .select('*')
+      .eq('project_id', project.id)
+      .order('order_index')
+    setItems(data ?? [])
+    setRefreshing(false)
   }
 
   function openModal(item: ChecklistItem) {
@@ -179,6 +192,11 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                   <div className="empty-state">checklist vazio — aguarde geōrgia configurar os itens.</div>
                 ) : (
                   <>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.75rem' }}>
+                      <button className="btn-chassis" onClick={refreshChecklist} disabled={refreshing} style={{ fontSize: '0.6rem', padding: '0.4rem 0.75rem' }} title="atualizar">
+                        {refreshing ? '...' : '↻'}
+                      </button>
+                    </div>
                     <div style={{ marginBottom: '1.75rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(8,236,243,0.85)', textTransform: 'uppercase' }}>progresso</span>

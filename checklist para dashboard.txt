@@ -1,0 +1,17 @@
+https://marcosboriero.netlify.app
+
+
+
+Fluxo para cadastrar um cliente:                                                                                                      
+  1. Cria o usuário no Supabase → Authentication → Add user                                                                             
+  2. Volta ao painel admin → clica em "+ novo projeto"                                                                                  
+  3. Seleciona o cliente (já aparece na lista) → dá um nome ao projeto → cria
+  
+  
+  sabr se dá pra criar um checklist personalizado pra cada cliente
+  na area de login, tem que dar pra voltar 
+  criar botão de login na pagina principal
+  Depois criar um gatilho pra essa pendência chegar no whatsapp dele com mensagem e link de acesso pra facilitar a chegada dele no dashboard.
+  também quero receber mensagem do whatsapp quando chegar coisa nova do cliente. cada envio.
+ajeitar o tamanho dos botões.
+ajeitar o problema de dar refresh na pagina e ele mudar de projeto. ele vai pro primeiro projeto. acho que tb resolve se tiver botão de refresh na área de checklist (admin e cliente)

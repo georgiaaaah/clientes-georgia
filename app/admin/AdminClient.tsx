@@ -23,6 +23,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
   const [checklist, setChecklist]     = useState<ChecklistItem[]>(initialChecklist)
   const [activeTab, setActiveTab]     = useState<'checklist' | 'design system' | 'estrutura' | 'aprovações'>('checklist')
   const [loading, setLoading]         = useState(false)
+  const [refreshing, setRefreshing]   = useState(false)
   const [showForm, setShowForm]       = useState(false)
   const [newName, setNewName]         = useState('')
   const [newClientId, setNewClientId] = useState(clients[0]?.id ?? '')
@@ -101,6 +102,18 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     setNewName('')
     setShowForm(false)
     setSaving(false)
+  }
+
+  async function refreshChecklist() {
+    if (!selectedId) return
+    setRefreshing(true)
+    const { data } = await supabase
+      .from('checklist_items')
+      .select('*')
+      .eq('project_id', selectedId)
+      .order('order_index')
+    setChecklist(data ?? [])
+    setRefreshing(false)
   }
 
   async function sendNote(e: React.FormEvent) {
@@ -319,6 +332,11 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
 
             {!loading && selectedProject && activeTab === 'checklist' && checklist.length > 0 && (
               <>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.75rem' }}>
+                  <button className="btn-chassis" onClick={refreshChecklist} disabled={refreshing} style={{ fontSize: '0.6rem', padding: '0.4rem 0.75rem' }} title="atualizar">
+                    {refreshing ? '...' : '↻'}
+                  </button>
+                </div>
                 {(() => {
                   const done = checklist.filter(i => i.checked_by_client || i.checked_by_admin).length
                   const pct  = Math.round((done / checklist.length) * 100)
