@@ -200,12 +200,6 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     setChecklist(prev => prev.filter(i => i.id !== item.id))
   }
 
-  async function clearQuestion() {
-    if (!selectedId) return
-    await supabase.from('projects').update({ client_question: null }).eq('id', selectedId)
-    setProjects(prev => prev.map(p => p.id === selectedId ? { ...p, client_question: null } : p))
-  }
-
   async function handleLogout() {
     await supabase.auth.signOut()
     router.push('/login')
@@ -406,24 +400,6 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
 
             {!loading && selectedProject && activeTab === 'checklist' && (
               <>
-                {selectedProject.client_question && (
-                  <div style={{
-                    background: 'rgba(255,170,0,0.07)', border: '1px solid rgba(255,170,0,0.25)',
-                    borderRadius: '8px', padding: '0.875rem 1rem', marginBottom: '1.25rem',
-                    display: 'flex', gap: '0.75rem', alignItems: 'flex-start',
-                  }}>
-                    <span style={{ color: '#FFAA00', fontFamily: 'var(--font-mono)', fontSize: '0.55rem', letterSpacing: '0.15em', textTransform: 'uppercase', flexShrink: 0, paddingTop: '0.1rem' }}>
-                      dúvida do cliente
-                    </span>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'rgba(240,241,241,0.75)', flex: 1, lineHeight: 1.6 }}>
-                      {selectedProject.client_question}
-                    </p>
-                    <button onClick={clearQuestion} style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '0.58rem', color: 'rgba(240,241,241,0.3)', flexShrink: 0 }}>
-                      resolver ✓
-                    </button>
-                  </div>
-                )}
-
                 {checklist.length > 0 && (
                   <>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.75rem' }}>
@@ -533,6 +509,12 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                                   <div className="admin-sent-note">
                                     <span className="admin-sent-note-label">notificação enviada</span>
                                     <p className="admin-sent-note-text">{item.admin_note}</p>
+                                  </div>
+                                )}
+                                {item.client_question && (
+                                  <div style={{ background: 'rgba(8,236,243,0.06)', border: '1px solid rgba(8,236,243,0.15)', borderRadius: '4px', padding: '0.4rem 0.6rem', marginTop: '0.4rem' }}>
+                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: 'rgba(8,236,243,0.45)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>dúvida do cliente</span>
+                                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(240,241,241,0.65)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.client_question}</p>
                                   </div>
                                 )}
                               </>
