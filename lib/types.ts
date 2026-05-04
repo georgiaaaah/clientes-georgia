@@ -40,6 +40,9 @@ export interface Project {
   design_system?: DesignSystemData
   design_system_url?: string | null
   estrutura_url?: string | null
+  client_question?: string | null
+  design_system_comment?: string | null
+  estrutura_comment?: string | null
   created_at: string
   profiles?: Profile
 }
