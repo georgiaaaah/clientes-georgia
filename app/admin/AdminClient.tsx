@@ -512,8 +512,8 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                                   </div>
                                 )}
                                 {item.client_question && (
-                                  <div style={{ background: 'rgba(8,236,243,0.06)', border: '1px solid rgba(8,236,243,0.15)', borderRadius: '4px', padding: '0.4rem 0.6rem', marginTop: '0.4rem' }}>
-                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: 'rgba(8,236,243,0.45)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>dúvida do cliente</span>
+                                  <div style={{ background: 'rgba(255,170,0,0.07)', border: '1px solid rgba(255,170,0,0.25)', borderRadius: '4px', padding: '0.4rem 0.6rem', marginTop: '0.4rem' }}>
+                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: '#FFAA00', letterSpacing: '0.15em', textTransform: 'uppercase' }}>dúvida do cliente</span>
                                     <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(240,241,241,0.65)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.client_question}</p>
                                   </div>
                                 )}
