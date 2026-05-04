@@ -157,7 +157,7 @@ export function HtmlTab({ projectId, initialUrl, isAdmin, storageKey, dbField, e
               {commentBtn}
             </div>
             {currentComment && <div style={{ marginBottom: '0.75rem' }}>{commentDisplay}</div>}
-            <div className="html-preview-wrap">
+            <div className="html-preview-wrap" style={{ marginTop: 0 }}>
               <iframe
                 srcDoc={htmlContent ?? ''}
                 style={{ flex: 1, border: 'none', width: '100%', minHeight: '600px', display: 'block' }}
