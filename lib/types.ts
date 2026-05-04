@@ -38,6 +38,8 @@ export interface Project {
   name: string
   status: ProjectStatus
   design_system?: DesignSystemData
+  design_system_url?: string | null
+  estrutura_url?: string | null
   created_at: string
   profiles?: Profile
 }

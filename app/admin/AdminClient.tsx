@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
+import type { CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
@@ -15,6 +16,31 @@ interface Props {
   clients: Profile[]
   initialProjectId: string | null
   initialChecklist: ChecklistItem[]
+}
+
+const iconBtn: CSSProperties = {
+  background: 'none', border: 'none', cursor: 'pointer',
+  fontFamily: 'var(--font-mono)', fontSize: '0.7rem',
+  color: 'rgba(240,241,241,0.28)', padding: '0.2rem 0.3rem',
+  lineHeight: 1, flexShrink: 0,
+}
+
+const inlineInput: CSSProperties = {
+  fontFamily: 'var(--font-mono)', fontSize: '0.75rem', padding: '0.3rem 0.5rem',
+  background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)',
+  borderRadius: '4px', color: 'var(--text-main)', outline: 'none', flex: 1,
+}
+
+const confirmBtn: CSSProperties = {
+  fontFamily: 'var(--font-mono)', fontSize: '0.6rem', padding: '0.3rem 0.6rem',
+  background: 'rgba(8,236,243,0.1)', border: '1px solid rgba(8,236,243,0.25)',
+  borderRadius: '4px', color: 'rgba(8,236,243,0.8)', cursor: 'pointer', flexShrink: 0,
+}
+
+const cancelBtn: CSSProperties = {
+  fontFamily: 'var(--font-mono)', fontSize: '0.6rem', padding: '0.3rem 0.6rem',
+  background: 'none', border: '1px solid rgba(255,255,255,0.12)',
+  borderRadius: '4px', color: 'rgba(240,241,241,0.4)', cursor: 'pointer', flexShrink: 0,
 }
 
 export function AdminClient({ adminProfile, projects: initialProjects, clients, initialProjectId, initialChecklist }: Props) {
@@ -32,6 +58,15 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
   const [noteText, setNoteText]       = useState('')
   const [noteSending, setNoteSending] = useState(false)
   const [, startTransition]           = useTransition()
+  // checklist editing
+  const [addingTo, setAddingTo]       = useState<string | null>(null)
+  const [addLabel, setAddLabel]       = useState('')
+  const [addNewCat, setAddNewCat]     = useState(false)
+  const [newCatName, setNewCatName]   = useState('')
+  const [newCatLabel, setNewCatLabel] = useState('')
+  const [editingId, setEditingId]     = useState<string | null>(null)
+  const [editLabel, setEditLabel]     = useState('')
+
   const router   = useRouter()
   const supabase = createClient()
 
@@ -41,9 +76,19 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     : -1
   const categories = Array.from(new Set(checklist.map(i => i.category)))
 
+  useEffect(() => {
+    const saved = localStorage.getItem('admin-selected-project')
+    if (saved && saved !== selectedId && projects.find(p => p.id === saved)) {
+      selectProject(saved)
+    }
+  }, [])
+
   async function selectProject(id: string) {
+    localStorage.setItem('admin-selected-project', id)
     setLoading(true)
     setSelectedId(id)
+    setAddingTo(null)
+    setEditingId(null)
     const { data } = await supabase
       .from('checklist_items')
       .select('*')
@@ -128,6 +173,31 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
       setNoteText('')
     }
     setNoteSending(false)
+  }
+
+  async function addItem(category: string, label: string) {
+    if (!selectedId || !label.trim() || !category.trim()) return
+    const maxOrder = checklist.length > 0 ? Math.max(...checklist.map(i => i.order_index)) : -1
+    const { data } = await supabase
+      .from('checklist_items')
+      .insert({ project_id: selectedId, label: label.trim(), category: category.trim(), order_index: maxOrder + 1 })
+      .select()
+      .single()
+    if (data) setChecklist(prev => [...prev, data])
+  }
+
+  async function saveEdit() {
+    if (!editingId || !editLabel.trim()) return
+    await supabase.from('checklist_items').update({ label: editLabel.trim() }).eq('id', editingId)
+    setChecklist(prev => prev.map(i => i.id === editingId ? { ...i, label: editLabel.trim() } : i))
+    setEditingId(null)
+    setEditLabel('')
+  }
+
+  async function deleteItem(item: ChecklistItem) {
+    if ((item.file_url || item.note) && !confirm(`"${item.label}" tem material enviado pelo cliente. Deletar mesmo assim?`)) return
+    await supabase.from('checklist_items').delete().eq('id', item.id)
+    setChecklist(prev => prev.filter(i => i.id !== item.id))
   }
 
   async function handleLogout() {
@@ -297,9 +367,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
             {loading && <div className="empty-state">carregando...</div>}
 
             {!loading && !selectedProject && projects.length === 0 && (
-              <div className="empty-state">
-                nenhum projeto ainda — crie um acima.
-              </div>
+              <div className="empty-state">nenhum projeto ainda — crie um acima.</div>
             )}
 
             {!loading && !selectedProject && projects.length > 0 && (
@@ -309,16 +377,18 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
             {!loading && selectedProject && activeTab === 'design system' && (
               <DesignSystemTab
                 projectId={selectedProject.id}
-                initialUrl={(selectedProject as any).design_system_url ?? null}
+                initialUrl={selectedProject.design_system_url ?? null}
                 isAdmin={true}
+                onUrlSaved={url => setProjects(prev => prev.map(p => p.id === selectedId ? { ...p, design_system_url: url } : p))}
               />
             )}
 
             {!loading && selectedProject && activeTab === 'estrutura' && (
               <EstruturaTab
                 projectId={selectedProject.id}
-                initialUrl={(selectedProject as any).estrutura_url ?? null}
+                initialUrl={selectedProject.estrutura_url ?? null}
                 isAdmin={true}
+                onUrlSaved={url => setProjects(prev => prev.map(p => p.id === selectedId ? { ...p, estrutura_url: url } : p))}
               />
             )}
 
@@ -326,42 +396,57 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
               <ApprovalsTab projectId={selectedProject.id} isAdmin={true} />
             )}
 
-            {!loading && selectedProject && activeTab === 'checklist' && checklist.length === 0 && (
-              <div className="empty-state">checklist vazio.</div>
-            )}
-
-            {!loading && selectedProject && activeTab === 'checklist' && checklist.length > 0 && (
+            {!loading && selectedProject && activeTab === 'checklist' && (
               <>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.75rem' }}>
-                  <button className="btn-chassis" onClick={refreshChecklist} disabled={refreshing} style={{ fontSize: '0.6rem', padding: '0.4rem 0.75rem' }} title="atualizar">
-                    {refreshing ? '...' : '↻'}
-                  </button>
-                </div>
-                {(() => {
-                  const done = checklist.filter(i => i.checked_by_client || i.checked_by_admin).length
-                  const pct  = Math.round((done / checklist.length) * 100)
-                  return (
-                    <div style={{ marginBottom: '1.75rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(8,236,243,0.85)', textTransform: 'uppercase' }}>
-                          materiais recebidos
-                        </span>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'rgba(240,241,241,0.35)' }}>
-                          {done}/{checklist.length}
-                        </span>
-                      </div>
-                      <div style={{ width: '100%', height: '2px', background: 'rgba(255,255,255,0.06)', borderRadius: '1px', overflow: 'hidden' }}>
-                        <div style={{ width: `${pct}%`, height: '100%', background: 'var(--gradient)', transition: 'width 0.4s ease' }} />
-                      </div>
+                {checklist.length > 0 && (
+                  <>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.75rem' }}>
+                      <button className="btn-chassis" onClick={refreshChecklist} disabled={refreshing} style={{ fontSize: '0.6rem', padding: '0.4rem 0.75rem' }} title="atualizar">
+                        {refreshing ? '...' : '↻'}
+                      </button>
                     </div>
-                  )
-                })()}
+                    {(() => {
+                      const done = checklist.filter(i => i.checked_by_client || i.checked_by_admin).length
+                      const pct  = Math.round((done / checklist.length) * 100)
+                      return (
+                        <div style={{ marginBottom: '1.75rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(8,236,243,0.85)', textTransform: 'uppercase' }}>
+                              materiais recebidos
+                            </span>
+                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'rgba(240,241,241,0.35)' }}>
+                              {done}/{checklist.length}
+                            </span>
+                          </div>
+                          <div style={{ width: '100%', height: '2px', background: 'rgba(255,255,255,0.06)', borderRadius: '1px', overflow: 'hidden' }}>
+                            <div style={{ width: `${pct}%`, height: '100%', background: 'var(--gradient)', transition: 'width 0.4s ease' }} />
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </>
+                )}
+
+                {checklist.length === 0 && (
+                  <div className="empty-state" style={{ marginBottom: '1.5rem' }}>checklist vazio.</div>
+                )}
 
                 {categories.map(cat => (
                   <div key={cat} className="checklist-category">
-                    <div className="category-label">{cat}</div>
+                    <div className="category-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span>{cat}</span>
+                      <button
+                        onClick={() => { setAddingTo(addingTo === cat ? null : cat); setAddLabel('') }}
+                        style={{ ...iconBtn, color: 'rgba(8,236,243,0.45)', fontSize: '0.85rem' }}
+                        title="adicionar item"
+                      >
+                        +
+                      </button>
+                    </div>
+
                     {checklist.filter(i => i.category === cat).map(item => {
                       const isComplete = item.checked_by_client && item.checked_by_admin
+                      const isEditing  = editingId === item.id
                       return (
                         <div key={item.id} className={`checklist-item ${isComplete ? 'is-complete' : ''}`}>
                           <div className="check-wrap">
@@ -388,44 +473,111 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                               )}
                             </button>
                           </div>
+
                           <div className="check-label-wrap">
-                            <div className="check-label">{item.label}</div>
-                            <div className="check-owners">
-                              {item.checked_by_client ? 'cliente ✓' : 'cliente pendente'}
-                              {' · '}
-                              {item.checked_by_admin ? 'geōrgia ✓' : 'geōrgia pendente'}
-                            </div>
-                            {(item.note || item.file_url) && (
-                              <div className="admin-submission">
-                                {item.note && <p className="admin-submission-note">{item.note}</p>}
-                                {item.file_url && (
-                                  <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="admin-submission-file">↗ arquivo enviado</a>
+                            {isEditing ? (
+                              <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                                <input
+                                  autoFocus
+                                  value={editLabel}
+                                  onChange={e => setEditLabel(e.target.value)}
+                                  onKeyDown={e => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditingId(null) }}
+                                  style={inlineInput}
+                                />
+                                <button onClick={saveEdit} style={confirmBtn}>✓</button>
+                                <button onClick={() => setEditingId(null)} style={cancelBtn}>✕</button>
+                              </div>
+                            ) : (
+                              <>
+                                <div className="check-label">{item.label}</div>
+                                <div className="check-owners">
+                                  {item.checked_by_client ? 'cliente ✓' : 'cliente pendente'}
+                                  {' · '}
+                                  {item.checked_by_admin ? 'geōrgia ✓' : 'geōrgia pendente'}
+                                </div>
+                                {(item.note || item.file_url) && (
+                                  <div className="admin-submission">
+                                    {item.note && <p className="admin-submission-note">{item.note}</p>}
+                                    {item.file_url && (
+                                      <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="admin-submission-file">↗ arquivo enviado</a>
+                                    )}
+                                  </div>
                                 )}
-                              </div>
-                            )}
-                            {item.admin_note && (
-                              <div className="admin-sent-note">
-                                <span className="admin-sent-note-label">notificação enviada</span>
-                                <p className="admin-sent-note-text">{item.admin_note}</p>
-                              </div>
+                                {item.admin_note && (
+                                  <div className="admin-sent-note">
+                                    <span className="admin-sent-note-label">notificação enviada</span>
+                                    <p className="admin-sent-note-text">{item.admin_note}</p>
+                                  </div>
+                                )}
+                              </>
                             )}
                           </div>
 
-                          {/* botão pedir reenvio */}
-                          {item.checked_by_client && (
-                            <button
-                              className="resubmit-btn"
-                              onClick={() => { setNoteItem(item); setNoteText('') }}
-                              title="pedir reenvio"
-                            >
-                              ↵
-                            </button>
-                          )}
+                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.1rem', flexShrink: 0 }}>
+                            {item.checked_by_client && !isEditing && (
+                              <button className="resubmit-btn" onClick={() => { setNoteItem(item); setNoteText('') }} title="pedir reenvio">↵</button>
+                            )}
+                            {!isEditing && (
+                              <>
+                                <button onClick={() => { setEditingId(item.id); setEditLabel(item.label) }} style={iconBtn} title="editar">✎</button>
+                                <button onClick={() => deleteItem(item)} style={iconBtn} title="remover">×</button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       )
                     })}
+
+                    {addingTo === cat && (
+                      <div style={{ display: 'flex', gap: '0.4rem', padding: '0.5rem 0 0.25rem', alignItems: 'center' }}>
+                        <input
+                          autoFocus
+                          value={addLabel}
+                          onChange={e => setAddLabel(e.target.value)}
+                          onKeyDown={async e => {
+                            if (e.key === 'Enter') { await addItem(cat, addLabel); setAddingTo(null); setAddLabel('') }
+                            if (e.key === 'Escape') { setAddingTo(null); setAddLabel('') }
+                          }}
+                          placeholder="label do novo item..."
+                          style={inlineInput}
+                        />
+                        <button onClick={async () => { await addItem(cat, addLabel); setAddingTo(null); setAddLabel('') }} style={confirmBtn}>✓</button>
+                        <button onClick={() => { setAddingTo(null); setAddLabel('') }} style={cancelBtn}>✕</button>
+                      </div>
+                    )}
                   </div>
                 ))}
+
+                {/* nova categoria */}
+                <div style={{ marginTop: '1rem' }}>
+                  {addNewCat ? (
+                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                      <input
+                        autoFocus
+                        value={newCatName}
+                        onChange={e => setNewCatName(e.target.value)}
+                        placeholder="categoria"
+                        style={{ ...inlineInput, flex: '0 0 140px' }}
+                      />
+                      <input
+                        value={newCatLabel}
+                        onChange={e => setNewCatLabel(e.target.value)}
+                        onKeyDown={async e => {
+                          if (e.key === 'Enter') { await addItem(newCatName, newCatLabel); setAddNewCat(false); setNewCatName(''); setNewCatLabel('') }
+                          if (e.key === 'Escape') { setAddNewCat(false) }
+                        }}
+                        placeholder="primeiro item"
+                        style={inlineInput}
+                      />
+                      <button onClick={async () => { await addItem(newCatName, newCatLabel); setAddNewCat(false); setNewCatName(''); setNewCatLabel('') }} style={confirmBtn}>✓</button>
+                      <button onClick={() => { setAddNewCat(false); setNewCatName(''); setNewCatLabel('') }} style={cancelBtn}>✕</button>
+                    </div>
+                  ) : (
+                    <button onClick={() => setAddNewCat(true)} style={{ ...iconBtn, color: 'rgba(240,241,241,0.2)', fontSize: '0.58rem', letterSpacing: '0.1em' }}>
+                      + nova categoria
+                    </button>
+                  )}
+                </div>
               </>
             )}
           </div>
@@ -473,4 +625,3 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     </main>
   )
 }
-

@@ -1,0 +1,121 @@
+# LUMINA — Checklist de Materiais
+
+---
+
+## A · Identidade Visual
+
+- [x] **Logotipo** `✓ Já contemplado`
+  Arquivo vetor (SVG ou AI) com fundo transparente. 3 versões: cor completa, monocromático claro e monocromático escuro. O conceito "Farol + Chip" deve estar finalizado antes do início do desenvolvimento.
+
+- [x] **Paleta de cores** `✓ Já contemplada`
+  Hexadecimais das cores primária, secundária e neutras. Se não houver paleta definida, derivaremos a partir do logotipo.
+
+- [ ] **Tagline / slogan** · `Obrigatório`
+  A frase de impacto para o Hero do site. Sugestão já aprovada: *"Transformamos ideias em tecnologia."* Confirmar se é esta ou se querem ajustar.
+
+- [x] **Manual de marca** `✓ Já contemplado`
+  Utilizar o manual já produzido para manter consistência com materiais gráficos anteriores.
+
+- [ ] **Print de tela de código (VS Code)** · `Opcional`
+  Uma captura de tela estilizada do ambiente de desenvolvimento. Reforça a identidade técnica do instituto e pode ser usada como elemento visual de apoio.
+
+---
+
+## B · Textos Institucionais
+
+- [ ] **Missão e Visão** · `Obrigatório`
+  2 a 3 frases cada. Devem comunicar o propósito do instituto de forma clara para empresas, estudantes e parceiros — não apenas para o meio acadêmico.
+
+- [ ] **Quem Somos** · `Obrigatório`
+  2 a 3 parágrafos cobrindo: história do instituto, vínculo com a UFC e ICTs, e o que diferencia a LUMINA de outros grupos de pesquisa da região.
+
+- [ ] **Descrição de cada área de atuação** · `Obrigatório`
+  Um parágrafo por área de atuação do instituto. Exemplos já mapeados: Telecomunicações e Controle de Sistemas Dinâmicos — mas podem existir outras áreas. Enviar a lista completa com descrição de cada uma. Linguagem acessível — não apenas técnica.
+
+- [ ] **Subtítulo do Hero** · `Obrigatório`
+  Uma linha de apoio à tagline que especifica o território de atuação. Exemplo: *"Pesquisa aplicada em telecomunicações e sistemas dinâmicos, da universidade para o mercado."*
+
+- [ ] **Métricas e números institucionais** · `Opcional`
+  Dados para o bloco de credibilidade: quantidade de projetos ativos, número de pesquisadores, anos de operação, número de parcerias. Mesmo que aproximados.
+
+---
+
+## C · Equipe
+
+- [ ] **Fotos de perfil de todos os membros** · `Obrigatório`
+  Fundo neutro ou ambiente de laboratório. Resolução mínima de 400×400px. Todos com o mesmo estilo visual para manter coerência nos cards.
+
+- [ ] **Minibiografia de cada membro** · `Obrigatório`
+  1 parágrafo por pessoa cobrindo: formação, área de especialização e projetos em que atua.
+
+- [ ] **Link do Currículo Lattes de cada membro** · `Obrigatório`
+  Essencial para credibilidade acadêmica. Solicitar de todos os membros, inclusive bolsistas com perfil ativo.
+
+- [ ] **Link do LinkedIn de cada membro** · `Opcional`
+  Para membros que tiverem perfil atualizado. Recomendado para quem tem atuação profissional além da acadêmica.
+
+---
+
+## D · Projetos em Desenvolvimento
+
+Para cada projeto ativo (Eólica, Camarão, 5G, LoRa, Radioastronomia, Farol, Smart Campus e outros):
+
+- [ ] **Título oficial e status** · `Obrigatório`
+  *"Em desenvolvimento"* ou *"Concluído"*. Define como o card será exibido e qual destaque visual receberá.
+
+- [ ] **Resumo técnico acessível** · `Obrigatório`
+  3 a 5 linhas respondendo: o que é o projeto, qual problema ele resolve e qual tecnologia utiliza. Escrito para empresas e gestores, não apenas para pesquisadores.
+
+- [ ] **Imagem ou diagrama representativo** · `Opcional`
+  Foto do protótipo, print do dashboard, simulação 3D ou diagrama técnico. Recomendado — fortalece o card visualmente — mas pode ser substituído por uma ilustração genérica caso ainda não haja material disponível.
+
+- [ ] **Parceiro ou instituição vinculada** · `Opcional`
+  Ex: *"Em parceria com o INPE."* Incluir quando houver — fortalece a percepção de escala e credibilidade do projeto.
+
+---
+
+## E · Publicações Acadêmicas
+
+- [ ] **Lista dos 3 a 5 artigos mais relevantes** · `Opcional`
+  Título, autores, ano e conferência ou revista. Alternativamente, o link do perfil do grupo no Google Scholar ou ResearchGate. Esta seção fortalece a credibilidade acadêmica do site.
+
+---
+
+## F · Parceiros e Instituições
+
+- [ ] **Nome e site de cada parceiro** · `Obrigatório`
+  Para cada parceiro ou instituição vinculada (ex: INPE, NASA, Iracema, Constanta), enviar o nome oficial e o endereço do site. Os logos serão obtidos a partir dessas informações.
+
+- [ ] **Confirmação formal de uso de cada parceiro** · `Obrigatório`
+  Por e-mail ou documento. Necessário antes de publicar. Evita problemas com parceiros que não autorizaram a exposição pública do vínculo.
+
+---
+
+## G · Infraestrutura e Contato
+
+- [ ] **Fotos da sala** · `Obrigatório`
+  Realizar após a organização do espaço. Necessárias: 3 a 4 fotos cobrindo bancada de trabalho, equipamentos e protótipos visíveis, e visão geral da sala. Boa iluminação é essencial.
+
+- [ ] **Endereço de e-mail para recebimento dos formulários** · `Obrigatório`
+  O endereço que receberá as mensagens enviadas pelos visitantes do site. Confirmar antes do desenvolvimento do formulário.
+
+- [ ] **Endereço completo e coordenadas** · `Obrigatório`
+  Para o mapa na seção de contato. Nome do campus, bloco, sala e CEP.
+
+- [ ] **Domínio registrado** · `Obrigatório`
+  Confirmar se o domínio já está registrado (ex: lumina.ufc.br ou similar). Necessário para deploy e configuração do e-mail.
+
+---
+
+## H · Formulários de Contato
+
+- [ ] **Confirmação dos perfis de contato** · `Obrigatório`
+  Validar os tipos definidos: (1) Tenho um projeto em mente, (2) Parceria institucional / ICTs, (3) Consultoria técnica, (4) Trabalhe conosco / Bolsista. Cada um abrirá um formulário personalizado.
+
+- [ ] **Campos específicos de cada formulário** · `Obrigatório`
+  Definir o que cada tipo de contato precisa informar além de nome, e-mail e telefone (que são comuns a todos). Ex: bolsistas precisam informar curso e semestre; empresas precisam descrever o projeto.
+
+- [ ] **Texto da política de privacidade (LGPD)** · `Obrigatório`
+  Para exibir no rodapé dos formulários. Obrigatório especialmente para o formulário com upload de PDF (propostas de projeto).
+
+---

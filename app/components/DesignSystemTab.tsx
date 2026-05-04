@@ -10,9 +10,10 @@ interface Props {
   storageKey: string   // ex: "design-system.html" | "estrutura.html"
   dbField: string      // ex: "design_system_url" | "estrutura_url"
   emptyLabel: string   // ex: "design system" | "estrutura do site"
+  onUrlSaved?: (url: string) => void
 }
 
-export function HtmlTab({ projectId, initialUrl, isAdmin, storageKey, dbField, emptyLabel }: Props) {
+export function HtmlTab({ projectId, initialUrl, isAdmin, storageKey, dbField, emptyLabel, onUrlSaved }: Props) {
   const [url, setUrl]             = useState<string | null>(initialUrl)
   const [htmlContent, setHtmlContent] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -65,6 +66,7 @@ export function HtmlTab({ projectId, initialUrl, isAdmin, storageKey, dbField, e
     }
 
     setUrl(publicUrl)
+    onUrlSaved?.(publicUrl)
     setUploading(false)
   }
 
@@ -74,10 +76,10 @@ export function HtmlTab({ projectId, initialUrl, isAdmin, storageKey, dbField, e
       <div className="empty-state">{emptyLabel} será publicado aqui em breve.</div>
     )
     return (
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', margin: '-2rem -3.5rem -2.5rem' }}>
+      <div className="html-preview-wrap">
         <iframe
           srcDoc={htmlContent ?? ''}
-          style={{ flex: 1, border: 'none', width: '100%', minHeight: '600px' }}
+          style={{ flex: 1, border: 'none', width: '100%', minHeight: '600px', display: 'block' }}
           title={emptyLabel}
           sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         />
@@ -136,3 +138,4 @@ export function DesignSystemTab(props: Omit<Props, 'storageKey' | 'dbField' | 'e
 export function EstruturaTab(props: Omit<Props, 'storageKey' | 'dbField' | 'emptyLabel'>) {
   return <HtmlTab {...props} storageKey="estrutura.html" dbField="estrutura_url" emptyLabel="estrutura do site" />
 }
+

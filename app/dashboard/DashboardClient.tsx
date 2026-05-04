@@ -278,13 +278,13 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
             )}
 
             {activeTab === 'design system' && project && (
-              <DesignSystemTab projectId={project.id} initialUrl={(project as any).design_system_url ?? null} isAdmin={isAdmin} />
+              <DesignSystemTab projectId={project.id} initialUrl={project.design_system_url ?? null} isAdmin={isAdmin} />
             )}
             {activeTab === 'design system' && !project && (
               <div className="empty-state">nenhum projeto ativo ainda.</div>
             )}
             {activeTab === 'estrutura' && project && (
-              <EstruturaTab projectId={project.id} initialUrl={(project as any).estrutura_url ?? null} isAdmin={isAdmin} />
+              <EstruturaTab projectId={project.id} initialUrl={project.estrutura_url ?? null} isAdmin={isAdmin} />
             )}
             {activeTab === 'estrutura' && !project && (
               <div className="empty-state">nenhum projeto ativo ainda.</div>

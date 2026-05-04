@@ -21,7 +21,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; font-size: 110%; }
 
 body {
   font-family: var(--font-epilogue), sans-serif;
@@ -1213,6 +1213,15 @@ body {
   .badge-mobile-only  { display: none; }
 }
 
+/* ── HTML PREVIEW (client dashboard) ── */
+.html-preview-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: -1.25rem -3.5rem -2.5rem;
+  clip-path: inset(0 0 0 0 round 16px 16px 0 0);
+}
+
 /* ── MOBILE ── */
 @media (max-width: 600px) {
   .page-wrap { padding: 1rem 0.75rem 2rem; }
@@ -1221,5 +1230,9 @@ body {
   .dash-tabs,
   .screen-interior { padding-left: calc(var(--wood-w) + 1rem); padding-right: calc(var(--wood-w) + 1rem); }
   .device--sm { margin-top: 1.5rem; }
+  .html-preview-wrap {
+    margin-left: calc(-1 * (var(--wood-w) + 1rem));
+    margin-right: calc(-1 * (var(--wood-w) + 1rem));
+  }
 }
 
