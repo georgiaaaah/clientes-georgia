@@ -298,32 +298,32 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                                 )}
                               </div>
 
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexShrink: 0 }}>
-                                <button
-                                  onClick={() => openQuestion(item)}
-                                  title="tirar dúvida sobre este item"
-                                  style={{
-                                    fontFamily: 'var(--font-mono)',
-                                    fontSize: '0.65rem',
-                                    fontWeight: 600,
-                                    padding: '0.3rem 0.5rem',
-                                    background: 'none',
-                                    border: `1px solid ${item.client_question ? 'rgba(8,236,243,0.4)' : 'rgba(240,241,241,0.15)'}`,
-                                    borderRadius: '4px',
-                                    color: item.client_question ? 'rgba(8,236,243,0.7)' : 'rgba(240,241,241,0.3)',
-                                    cursor: 'pointer',
-                                    lineHeight: 1,
-                                  }}
-                                >
-                                  ?
-                                </button>
-                                {!isComplete && (
+                              {!isComplete && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexShrink: 0 }}>
+                                  <button
+                                    onClick={() => openQuestion(item)}
+                                    title="tirar dúvida sobre este item"
+                                    style={{
+                                      fontFamily: 'var(--font-mono)',
+                                      fontSize: '0.65rem',
+                                      fontWeight: 600,
+                                      padding: '0.3rem 0.5rem',
+                                      background: 'none',
+                                      border: `1px solid ${item.client_question ? 'rgba(8,236,243,0.4)' : 'rgba(240,241,241,0.15)'}`,
+                                      borderRadius: '4px',
+                                      color: item.client_question ? 'rgba(8,236,243,0.7)' : 'rgba(240,241,241,0.3)',
+                                      cursor: 'pointer',
+                                      lineHeight: 1,
+                                    }}
+                                  >
+                                    ?
+                                  </button>
                                   <button className="item-send-btn" onClick={() => openModal(item)} title="enviar material">
                                     <span>↑</span>
                                     <span className="item-send-label">enviar</span>
                                   </button>
-                                )}
-                              </div>
+                                </div>
+                              )}
                             </div>
                           )
                         })}
