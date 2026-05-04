@@ -24,6 +24,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className={`${epilogue.variable} ${ibmPlexMono.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon-light.svg" media="(prefers-color-scheme: light)" />
+        <link rel="icon" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)" />
+      </head>
       <body>{children}</body>
     </html>
   )
