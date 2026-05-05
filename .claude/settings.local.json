@@ -6,7 +6,18 @@
       "Bash(rtk read *)",
       "Bash(rtk grep *)",
       "Bash(rtk git *)",
-      "Bash(rtk du *)"
+      "Bash(rtk du *)",
+      "Bash(Get-ChildItem \"C:\\\\Projetos\\\\clientes-georgia\\\\supabase\\\\migrations\" -File)",
+      "Bash(Select-Object Name)",
+      "Bash(Sort-Object Name)",
+      "Bash(rtk npx *)",
+      "Bash(node --env-file=.env.local --experimental-strip-types scripts/set-checklist.ts magnoprudencio@gmail.com \"checklists dos clientes/LUMINA — Checklist de Materiais.txt\")",
+      "Bash(node --experimental-strip-types --env-file=.env.local -e ' *)",
+      "Bash(node --experimental-strip-types --env-file=.env.local scripts/set-checklist.ts magnoprudencio@gmail.com \"checklists dos clientes/LUMINA — Checklist de Materiais.txt\")",
+      "Bash(rtk tsc *)",
+      "Bash(rtk npm *)",
+      "Bash(supabase *)",
+      "PowerShell(Rename-Item *)"
     ]
   }
 }
