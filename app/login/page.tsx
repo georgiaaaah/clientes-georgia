@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import { SFX } from '@/lib/sfx'
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('')
@@ -12,6 +13,17 @@ export default function LoginPage() {
   const [loading, setLoading]   = useState(false)
   const [hasError, setHasError] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      const btn = (e.target as HTMLElement).closest('button')
+      if (!btn) return
+      if (btn.classList.contains('cta-btn')) SFX.press()
+      else SFX.click()
+    }
+    document.addEventListener('click', handleClick, true)
+    return () => document.removeEventListener('click', handleClick, true)
+  }, [])
 
   function clearError() {
     if (hasError) { setHasError(false); setError('') }
