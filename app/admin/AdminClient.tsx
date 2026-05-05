@@ -561,14 +561,14 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                                 )}
                                 {item.client_question && (
                                   <div style={{ background: 'rgba(255,170,0,0.07)', border: '1px solid rgba(255,170,0,0.25)', borderRadius: '4px', padding: '0.4rem 0.6rem', marginTop: '0.4rem' }}>
-                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: '#FFAA00', letterSpacing: '0.15em', textTransform: 'uppercase' }}>dúvida do cliente</span>
-                                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(240,241,241,0.65)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.client_question}</p>
+                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: '#FFAA00', letterSpacing: '0.15em', textTransform: 'uppercase' }}>dúvida do cliente</span>
+                                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'rgba(240,241,241,0.65)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.client_question}</p>
 
                                     {/* resposta */}
                                     {item.admin_question_reply && replyingTo !== item.id ? (
                                       <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,170,0,0.15)' }}>
-                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: 'rgba(255,170,0,0.5)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>sua resposta</span>
-                                        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(240,241,241,0.55)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.admin_question_reply}</p>
+                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'rgba(255,170,0,0.5)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>sua resposta</span>
+                                        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'rgba(240,241,241,0.55)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.admin_question_reply}</p>
                                         <button onClick={() => { setReplyingTo(item.id); setReplyText(item.admin_question_reply ?? '') }} style={{ ...iconBtn, fontSize: '0.55rem', marginTop: '0.25rem', color: 'rgba(255,170,0,0.4)' }}>editar resposta</button>
                                       </div>
                                     ) : replyingTo === item.id ? (

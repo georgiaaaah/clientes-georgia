@@ -298,12 +298,12 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                                 )}
                                 {item.client_question && (
                                   <div style={{ background: 'rgba(255,170,0,0.07)', border: '1px solid rgba(255,170,0,0.22)', borderRadius: '4px', padding: '0.45rem 0.65rem', marginTop: '0.35rem' }}>
-                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: '#FFAA00', letterSpacing: '0.15em', textTransform: 'uppercase' }}>sua dúvida</span>
-                                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(240,241,241,0.65)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.client_question}</p>
+                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: '#FFAA00', letterSpacing: '0.15em', textTransform: 'uppercase' }}>sua dúvida</span>
+                                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'rgba(240,241,241,0.65)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.client_question}</p>
                                     {item.admin_question_reply && (
                                       <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,170,0,0.15)' }}>
-                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: 'rgba(255,170,0,0.5)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>resposta de geōrgia</span>
-                                        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'rgba(240,241,241,0.75)', lineHeight: 1.6, marginTop: '0.2rem' }}>{item.admin_question_reply}</p>
+                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'rgba(255,170,0,0.5)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>resposta de geōrgia</span>
+                                        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'rgba(240,241,241,0.75)', lineHeight: 1.6, marginTop: '0.2rem' }}>{item.admin_question_reply}</p>
                                       </div>
                                     )}
                                   </div>

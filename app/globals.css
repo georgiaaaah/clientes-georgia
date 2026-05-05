@@ -275,7 +275,7 @@ body {
 
 .category-label {
   font-family: var(--font-mono), 'IBM Plex Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.72rem;
   font-weight: 300;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -338,7 +338,7 @@ body {
 }
 .check-label {
   font-family: var(--font-epilogue), 'Epilogue', sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   font-weight: 300;
   color: rgba(240,241,241,0.92);
   transition: color 0.15s ease;
@@ -348,7 +348,7 @@ body {
 
 .check-owners {
   font-family: var(--font-mono), 'IBM Plex Mono', monospace;
-  font-size: 0.52rem;
+  font-size: 0.65rem;
   font-weight: 300;
   letter-spacing: 0.08em;
   color: rgba(8,236,243,0.55);
@@ -477,14 +477,14 @@ body {
 }
 .admin-sent-note-label {
   font-family: var(--font-mono), monospace;
-  font-size: 0.52rem;
+  font-size: 0.63rem;
   letter-spacing: 0.12em;
   color: rgba(255,170,0,0.7);
   text-transform: uppercase;
 }
 .admin-sent-note-text {
   font-family: var(--font-mono), monospace;
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   color: rgba(240,241,241,0.5);
   line-height: 1.5;
 }
@@ -502,14 +502,14 @@ body {
 }
 .client-admin-note-label {
   font-family: var(--font-mono), monospace;
-  font-size: 0.55rem;
+  font-size: 0.67rem;
   letter-spacing: 0.12em;
   color: rgba(255,170,0,0.7);
   text-transform: uppercase;
 }
 .client-admin-note-text {
   font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
+  font-size: 0.83rem;
   color: rgba(240,241,241,0.75);
   line-height: 1.6;
   white-space: pre-wrap;
@@ -529,7 +529,7 @@ body {
 
 .admin-submission-note {
   font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   font-weight: 300;
   color: rgba(240,241,241,0.75);
   line-height: 1.6;
@@ -539,7 +539,7 @@ body {
 
 .admin-submission-file {
   font-family: var(--font-mono), monospace;
-  font-size: 0.62rem;
+  font-size: 0.74rem;
   color: var(--teal);
   text-decoration: none;
   letter-spacing: 0.06em;
@@ -549,7 +549,7 @@ body {
 
 .item-file-link {
   font-family: var(--font-mono), monospace;
-  font-size: 0.55rem;
+  font-size: 0.68rem;
   color: rgba(8,236,243,0.5);
   text-decoration: none;
   letter-spacing: 0.06em;
