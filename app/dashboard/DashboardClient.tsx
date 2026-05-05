@@ -382,7 +382,10 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
           <div className="modal-panel" onClick={e => e.stopPropagation()} style={{ maxWidth: '480px' }}>
             <div className="modal-header">
               <span className="modal-title">como usar o painel</span>
-              <button className="modal-close" onClick={() => setHelpOpen(false)}>✕</button>
+              <button className="modal-close" onClick={() => setHelpOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.1em', opacity: 0.5 }}>fechar</span>
+                ✕
+              </button>
             </div>
             <div className="modal-body" style={{ gap: '1.25rem' }}>
 
@@ -421,12 +424,6 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                 </p>
               </div>
 
-            </div>
-            <div className="modal-footer">
-              <button className="cta-btn" onClick={() => setHelpOpen(false)}>
-                <span className="cta-led" />
-                <span className="cta-label">entendido</span>
-              </button>
             </div>
           </div>
         </div>
