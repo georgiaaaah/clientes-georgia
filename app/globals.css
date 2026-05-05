@@ -822,14 +822,25 @@ body {
 
 /* ── CTA BUTTON (identical to "iniciar projeto" on main site) ── */
 .login-cta {
-  padding: 1.75rem 3.5rem 2rem;
+  padding: 1.75rem 3.5rem 2.75rem;
   background: var(--chassis-2);
   border-top: 1px solid var(--divider);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 1.5rem;
 }
+.login-back {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  opacity: 0.45;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+.login-back:hover { opacity: 0.75; }
 
 .cta-btn {
   display: inline-flex;

@@ -121,7 +121,7 @@ export default function LoginPage() {
             {error && <p className="field-error">{error}</p>}
           </div>
 
-          {/* CTA panel — entalhe + botão igual ao "iniciar projeto" */}
+          {/* CTA panel */}
           <div className="login-cta">
             <button
               type="submit"
@@ -138,6 +138,7 @@ export default function LoginPage() {
               />
               <span className="cta-label">{loading ? 'entrando...' : 'entrar'}</span>
             </button>
+            <a href="https://georgia.app.br" className="login-back">← voltar ao site</a>
           </div>
 
         </form>
