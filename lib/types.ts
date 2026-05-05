@@ -57,6 +57,7 @@ export interface ChecklistItem {
   note: string | null
   file_url: string | null
   admin_note: string | null
+  admin_file_url: string | null
   client_question: string | null
   admin_question_reply: string | null
   order_index: number
@@ -70,7 +71,7 @@ export const STATUS_STEPS: { key: ProjectStatus; label: string }[] = [
   { key: 'entregue',      label: 'entregue'      },
 ]
 
-export const CHECKLIST_DEFAULTS: Omit<ChecklistItem, 'id' | 'project_id' | 'checked_by_client' | 'checked_by_admin' | 'note' | 'file_url' | 'admin_note' | 'client_question' | 'admin_question_reply'>[] = [
+export const CHECKLIST_DEFAULTS: Omit<ChecklistItem, 'id' | 'project_id' | 'checked_by_client' | 'checked_by_admin' | 'note' | 'file_url' | 'admin_note' | 'admin_file_url' | 'client_question' | 'admin_question_reply'>[] = [
   { label: 'copy da página inicial (hero, tagline, CTAs)',   category: 'Textos',            order_index: 0 },
   { label: 'texto sobre / quem somos',                       category: 'Textos',            order_index: 1 },
   { label: 'serviços ou produtos (lista + descrições)',      category: 'Textos',            order_index: 2 },

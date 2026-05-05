@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState, useTransition, useEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -66,9 +66,12 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
   const [newCatLabel, setNewCatLabel] = useState('')
   const [editingId, setEditingId]     = useState<string | null>(null)
   const [editLabel, setEditLabel]     = useState('')
-  const [replyingTo, setReplyingTo]   = useState<string | null>(null)
-  const [replyText, setReplyText]     = useState('')
-  const [replySaving, setReplySaving] = useState(false)
+  const [replyingTo, setReplyingTo]       = useState<string | null>(null)
+  const [replyText, setReplyText]         = useState('')
+  const [replySaving, setReplySaving]     = useState(false)
+  const [uploadingItemId, setUploadingItemId] = useState<string | null>(null)
+  const adminFileInputRef                 = useRef<HTMLInputElement>(null)
+  const pendingUploadItem                 = useRef<ChecklistItem | null>(null)
 
   const router   = useRouter()
   const supabase = createClient()
@@ -201,6 +204,27 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     if ((item.file_url || item.note) && !confirm(`"${item.label}" tem material enviado pelo cliente. Deletar mesmo assim?`)) return
     await supabase.from('checklist_items').delete().eq('id', item.id)
     setChecklist(prev => prev.filter(i => i.id !== item.id))
+  }
+
+  async function uploadAdminFile(file: File, item: ChecklistItem) {
+    if (!selectedProject) return
+    setUploadingItemId(item.id)
+    const ext  = file.name.split('.').pop()
+    const path = `${selectedProject.id}/${item.id}/admin.${ext}`
+    const { error: upErr } = await supabase.storage
+      .from('materiais')
+      .upload(path, file, { upsert: true })
+    if (upErr) { setUploadingItemId(null); return }
+    const { data: urlData } = supabase.storage.from('materiais').getPublicUrl(path)
+    const url = urlData.publicUrl
+    await supabase.from('checklist_items').update({ admin_file_url: url }).eq('id', item.id)
+    setChecklist(prev => prev.map(i => i.id === item.id ? { ...i, admin_file_url: url } : i))
+    setUploadingItemId(null)
+  }
+
+  async function removeAdminFile(item: ChecklistItem) {
+    await supabase.from('checklist_items').update({ admin_file_url: null }).eq('id', item.id)
+    setChecklist(prev => prev.map(i => i.id === item.id ? { ...i, admin_file_url: null } : i))
   }
 
   async function sendReply(itemId: string) {
@@ -519,8 +543,14 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                                   <div className="admin-submission">
                                     {item.note && <p className="admin-submission-note">{item.note}</p>}
                                     {item.file_url && (
-                                      <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="admin-submission-file">↗ arquivo enviado</a>
+                                      <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="admin-submission-file">↗ arquivo do cliente</a>
                                     )}
+                                  </div>
+                                )}
+                                {item.admin_file_url && (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.2rem' }}>
+                                    <a href={item.admin_file_url} target="_blank" rel="noopener noreferrer" className="admin-submission-file" style={{ color: 'rgba(255,170,0,0.65)' }}>↗ arquivo seu</a>
+                                    <button onClick={() => removeAdminFile(item)} style={{ ...iconBtn, fontSize: '0.55rem', padding: '0.1rem 0.2rem' }} title="remover arquivo">×</button>
                                   </div>
                                 )}
                                 {item.admin_note && (
@@ -571,6 +601,14 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                             )}
                             {!isEditing && (
                               <>
+                                <button
+                                  onClick={() => { pendingUploadItem.current = item; adminFileInputRef.current?.click() }}
+                                  disabled={uploadingItemId === item.id}
+                                  style={{ ...iconBtn, fontSize: '0.75rem' }}
+                                  title="enviar arquivo para o cliente"
+                                >
+                                  {uploadingItemId === item.id ? '…' : '↑'}
+                                </button>
                                 <button onClick={() => { setEditingId(item.id); setEditLabel(item.label) }} style={iconBtn} title="editar">✎</button>
                                 <button onClick={() => deleteItem(item)} style={iconBtn} title="remover">×</button>
                               </>
@@ -636,6 +674,18 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
         </div>
 
       </div>
+
+      {/* input oculto para upload admin */}
+      <input
+        ref={adminFileInputRef}
+        type="file"
+        style={{ display: 'none' }}
+        onChange={e => {
+          const f = e.target.files?.[0]
+          if (f && pendingUploadItem.current) uploadAdminFile(f, pendingUploadItem.current)
+          e.target.value = ''
+        }}
+      />
 
       {/* ── MODAL PEDIR REENVIO ── */}
       {noteItem && (

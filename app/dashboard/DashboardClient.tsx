@@ -285,6 +285,11 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                                     ↗ arquivo enviado
                                   </a>
                                 )}
+                                {item.admin_file_url && (
+                                  <a href={item.admin_file_url} target="_blank" rel="noopener noreferrer" className="item-file-link" style={{ color: 'rgba(255,170,0,0.7)' }}>
+                                    ↗ arquivo de geōrgia
+                                  </a>
+                                )}
                                 {item.admin_note && !item.checked_by_client && (
                                   <div className="client-admin-note">
                                     <span className="client-admin-note-label">⚠ geōrgia solicitou ajuste</span>
