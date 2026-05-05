@@ -66,6 +66,9 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
   const [newCatLabel, setNewCatLabel] = useState('')
   const [editingId, setEditingId]     = useState<string | null>(null)
   const [editLabel, setEditLabel]     = useState('')
+  const [replyingTo, setReplyingTo]   = useState<string | null>(null)
+  const [replyText, setReplyText]     = useState('')
+  const [replySaving, setReplySaving] = useState(false)
 
   const router   = useRouter()
   const supabase = createClient()
@@ -198,6 +201,21 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     if ((item.file_url || item.note) && !confirm(`"${item.label}" tem material enviado pelo cliente. Deletar mesmo assim?`)) return
     await supabase.from('checklist_items').delete().eq('id', item.id)
     setChecklist(prev => prev.filter(i => i.id !== item.id))
+  }
+
+  async function sendReply(itemId: string) {
+    if (!replyText.trim()) return
+    setReplySaving(true)
+    const { error } = await supabase
+      .from('checklist_items')
+      .update({ admin_question_reply: replyText.trim() })
+      .eq('id', itemId)
+    if (!error) {
+      setChecklist(prev => prev.map(i => i.id === itemId ? { ...i, admin_question_reply: replyText.trim() } : i))
+      setReplyingTo(null)
+      setReplyText('')
+    }
+    setReplySaving(false)
   }
 
   async function handleLogout() {
@@ -515,6 +533,32 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                                   <div style={{ background: 'rgba(255,170,0,0.07)', border: '1px solid rgba(255,170,0,0.25)', borderRadius: '4px', padding: '0.4rem 0.6rem', marginTop: '0.4rem' }}>
                                     <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: '#FFAA00', letterSpacing: '0.15em', textTransform: 'uppercase' }}>dúvida do cliente</span>
                                     <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(240,241,241,0.65)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.client_question}</p>
+
+                                    {/* resposta */}
+                                    {item.admin_question_reply && replyingTo !== item.id ? (
+                                      <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,170,0,0.15)' }}>
+                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: 'rgba(255,170,0,0.5)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>sua resposta</span>
+                                        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(240,241,241,0.55)', lineHeight: 1.5, marginTop: '0.2rem' }}>{item.admin_question_reply}</p>
+                                        <button onClick={() => { setReplyingTo(item.id); setReplyText(item.admin_question_reply ?? '') }} style={{ ...iconBtn, fontSize: '0.55rem', marginTop: '0.25rem', color: 'rgba(255,170,0,0.4)' }}>editar resposta</button>
+                                      </div>
+                                    ) : replyingTo === item.id ? (
+                                      <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                                        <input
+                                          autoFocus
+                                          value={replyText}
+                                          onChange={e => setReplyText(e.target.value)}
+                                          onKeyDown={e => { if (e.key === 'Enter') sendReply(item.id); if (e.key === 'Escape') setReplyingTo(null) }}
+                                          placeholder="sua resposta..."
+                                          style={{ ...inlineInput, fontSize: '0.68rem' }}
+                                        />
+                                        <button onClick={() => sendReply(item.id)} disabled={replySaving || !replyText.trim()} style={confirmBtn}>{replySaving ? '...' : '✓'}</button>
+                                        <button onClick={() => setReplyingTo(null)} style={cancelBtn}>✕</button>
+                                      </div>
+                                    ) : (
+                                      <button onClick={() => { setReplyingTo(item.id); setReplyText('') }} style={{ ...iconBtn, fontSize: '0.55rem', marginTop: '0.35rem', color: 'rgba(255,170,0,0.5)' }}>
+                                        responder
+                                      </button>
+                                    )}
                                   </div>
                                 )}
                               </>

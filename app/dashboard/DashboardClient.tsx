@@ -292,9 +292,17 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                                   </div>
                                 )}
                                 {item.client_question && (
-                                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', color: 'rgba(8,236,243,0.5)', marginTop: '0.3rem', letterSpacing: '0.04em' }}>
-                                    ↳ dúvida enviada
-                                  </p>
+                                  <div style={{ marginTop: '0.3rem' }}>
+                                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', color: 'rgba(8,236,243,0.5)', letterSpacing: '0.04em' }}>
+                                      ↳ dúvida enviada
+                                    </p>
+                                    {item.admin_question_reply && (
+                                      <div style={{ background: 'rgba(255,170,0,0.07)', border: '1px solid rgba(255,170,0,0.22)', borderRadius: '4px', padding: '0.45rem 0.65rem', marginTop: '0.35rem' }}>
+                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.5rem', color: '#FFAA00', letterSpacing: '0.15em', textTransform: 'uppercase' }}>resposta de geōrgia</span>
+                                        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'rgba(240,241,241,0.75)', lineHeight: 1.6, marginTop: '0.2rem' }}>{item.admin_question_reply}</p>
+                                      </div>
+                                    )}
+                                  </div>
                                 )}
                               </div>
 
