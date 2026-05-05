@@ -396,7 +396,7 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
               <div>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(8,236,243,0.7)', marginBottom: '0.5rem' }}>aba materiais</p>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'rgba(240,241,241,0.7)', lineHeight: 1.7 }}>
-                  Lista de tudo que precisa ser enviado. Para cada item, clique em <strong style={{ color: 'rgba(240,241,241,0.9)' }}>↑ enviar</strong> para fazer upload de um arquivo ou colar um texto. Após o envio, o LED do lado esquerdo acende. Quando geōrgia confirmar o recebimento, o LED amarelo também acende.
+                  Lista de tudo que precisa ser enviado. Para cada item, clique em <strong style={{ color: 'rgba(240,241,241,0.9)' }}>↑ enviar</strong> para fazer upload de um arquivo ou colar um texto. Após o envio, o LED verde (seu) acende. Quando geōrgia confirmar o recebimento, o LED azul também acende.
                 </p>
               </div>
 
