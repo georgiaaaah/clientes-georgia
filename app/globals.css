@@ -1224,15 +1224,15 @@ body {
 
 /* ── MOBILE ── */
 @media (max-width: 600px) {
-  .page-wrap { padding: 1rem 0.75rem 2rem; }
+  .page-wrap { padding: 1rem 0 2rem; }
   .panel-header,
   .status-bar,
   .dash-tabs,
-  .screen-interior { padding-left: calc(var(--wood-w) + 1rem); padding-right: calc(var(--wood-w) + 1rem); }
+  .screen-interior { padding-left: calc(var(--wood-w) + 0.75rem); padding-right: calc(var(--wood-w) + 0.75rem); }
   .device--sm { margin-top: 1.5rem; }
   .html-preview-wrap {
-    margin-left: calc(-1 * (var(--wood-w) + 1rem));
-    margin-right: calc(-1 * (var(--wood-w) + 1rem));
+    margin-left: calc(-1 * (var(--wood-w) + 0.75rem));
+    margin-right: calc(-1 * (var(--wood-w) + 0.75rem));
   }
 }
 
