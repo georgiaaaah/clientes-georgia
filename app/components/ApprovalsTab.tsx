@@ -38,6 +38,7 @@ export function ApprovalsTab({ projectId, isAdmin }: Props) {
   const [refreshing, setRefreshing] = useState(false)
   const [commenting, setCommenting] = useState<string | null>(null)
   const [comment, setComment]       = useState('')
+  const [feedbackId, setFeedbackId] = useState<string | null>(null)
   const [newTitle, setNewTitle]     = useState('')
   const [newDesc, setNewDesc]       = useState('')
   const [newLink, setNewLink]       = useState('')
@@ -94,6 +95,8 @@ export function ApprovalsTab({ projectId, isAdmin }: Props) {
     setItems(prev => prev.map(i => i.id === id ? { ...i, ...update } : i))
     setCommenting(null)
     setComment('')
+    setFeedbackId(id)
+    setTimeout(() => setFeedbackId(null), 2500)
   }
 
   if (loading) return <div className="empty-state">carregando...</div>
@@ -170,6 +173,10 @@ export function ApprovalsTab({ projectId, isAdmin }: Props) {
               <span className="approval-comment-label">comentário do cliente</span>
               <p className="approval-comment-text">{item.client_comment}</p>
             </div>
+          )}
+
+          {feedbackId === item.id && (
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(240,241,241,0.4)', marginTop: '0.5rem' }}>resposta enviada ✓</p>
           )}
 
           {/* ações do cliente */}

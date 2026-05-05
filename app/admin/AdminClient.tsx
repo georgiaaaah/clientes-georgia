@@ -72,6 +72,8 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
   const [uploadingItemId, setUploadingItemId] = useState<string | null>(null)
   const adminFileInputRef                 = useRef<HTMLInputElement>(null)
   const pendingUploadItem                 = useRef<ChecklistItem | null>(null)
+  const [deleteTarget, setDeleteTarget]   = useState<ChecklistItem | null>(null)
+  const [questionCounts, setQuestionCounts] = useState<Record<string, number>>({})
 
   const router   = useRouter()
   const supabase = createClient()
@@ -87,6 +89,24 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     if (saved && saved !== selectedId && projects.find(p => p.id === saved)) {
       selectProject(saved)
     }
+  }, [])
+
+  useEffect(() => {
+    async function fetchQuestionCounts() {
+      const { data } = await supabase
+        .from('checklist_items')
+        .select('project_id')
+        .not('client_question', 'is', null)
+        .is('admin_question_reply', null)
+      if (data) {
+        const counts: Record<string, number> = {}
+        data.forEach((row: { project_id: string }) => {
+          counts[row.project_id] = (counts[row.project_id] || 0) + 1
+        })
+        setQuestionCounts(counts)
+      }
+    }
+    fetchQuestionCounts()
   }, [])
 
   async function selectProject(id: string) {
@@ -201,9 +221,17 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
   }
 
   async function deleteItem(item: ChecklistItem) {
-    if ((item.file_url || item.note) && !confirm(`"${item.label}" tem material enviado pelo cliente. Deletar mesmo assim?`)) return
-    await supabase.from('checklist_items').delete().eq('id', item.id)
-    setChecklist(prev => prev.filter(i => i.id !== item.id))
+    if (item.file_url || item.note) {
+      setDeleteTarget(item)
+      return
+    }
+    await performDelete(item.id)
+  }
+
+  async function performDelete(itemId: string) {
+    await supabase.from('checklist_items').delete().eq('id', itemId)
+    setChecklist(prev => prev.filter(i => i.id !== itemId))
+    setDeleteTarget(null)
   }
 
   async function uploadAdminFile(file: File, item: ChecklistItem) {
@@ -235,7 +263,11 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
       .update({ admin_question_reply: replyText.trim() })
       .eq('id', itemId)
     if (!error) {
+      const wasUnanswered = checklist.find(i => i.id === itemId)?.admin_question_reply == null
       setChecklist(prev => prev.map(i => i.id === itemId ? { ...i, admin_question_reply: replyText.trim() } : i))
+      if (wasUnanswered && selectedId) {
+        setQuestionCounts(prev => ({ ...prev, [selectedId]: Math.max(0, (prev[selectedId] ?? 1) - 1) }))
+      }
       setReplyingTo(null)
       setReplyText('')
     }
@@ -291,9 +323,14 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
               key={p.id}
               className={`tab-btn ${selectedId === p.id ? 'is-active' : ''}`}
               onClick={() => selectProject(p.id)}
-              style={{ bottom: 0, borderRadius: '4px', borderBottom: '1px solid rgba(0,0,0,0.1)', flexShrink: 0, whiteSpace: 'nowrap' }}
+              style={{ bottom: 0, borderRadius: '4px', borderBottom: '1px solid rgba(0,0,0,0.1)', flexShrink: 0, whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
             >
               {p.name} — {p.profiles?.name ?? '—'}
+              {(questionCounts[p.id] ?? 0) > 0 && (
+                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: '#FFAA00', color: '#000', borderRadius: '999px', fontSize: '0.48rem', fontFamily: 'var(--font-mono)', fontWeight: 700, minWidth: '14px', height: '14px', padding: '0 3px' }}>
+                  {questionCounts[p.id]}
+                </span>
+              )}
             </button>
           ))}
 
@@ -607,7 +644,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                                   style={{ ...iconBtn, fontSize: '0.75rem' }}
                                   title="enviar arquivo para o cliente"
                                 >
-                                  {uploadingItemId === item.id ? '…' : '↑'}
+                                  {uploadingItemId === item.id ? '…' : '↓'}
                                 </button>
                                 <button onClick={() => { setEditingId(item.id); setEditLabel(item.label) }} style={iconBtn} title="editar">✎</button>
                                 <button onClick={() => deleteItem(item)} style={iconBtn} title="remover">×</button>
@@ -686,6 +723,30 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
           e.target.value = ''
         }}
       />
+
+      {/* ── MODAL CONFIRMAR DELETE ── */}
+      {deleteTarget && (
+        <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
+          <div className="modal-panel" onClick={e => e.stopPropagation()} style={{ maxWidth: '360px' }}>
+            <div className="modal-header">
+              <span className="modal-title">remover item</span>
+              <button className="modal-close" onClick={() => setDeleteTarget(null)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'rgba(240,241,241,0.65)', lineHeight: 1.7 }}>
+                <strong style={{ color: 'rgba(240,241,241,0.9)' }}>"{deleteTarget.label}"</strong> tem material enviado pelo cliente. Remover mesmo assim?
+              </p>
+              <div className="modal-footer" style={{ marginTop: '1.25rem' }}>
+                <button className="btn-chassis" onClick={() => setDeleteTarget(null)} style={{ fontSize: '0.62rem', padding: '0.5rem 1rem' }}>cancelar</button>
+                <button className="cta-btn" onClick={() => performDelete(deleteTarget.id)}>
+                  <span className="cta-led" style={{ background: '#DE0538', boxShadow: '0 0 5px 2px rgba(222,5,56,0.5)', animation: 'none' }} />
+                  <span className="cta-label">remover</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── MODAL PEDIR REENVIO ── */}
       {noteItem && (

@@ -586,6 +586,13 @@ body {
     0 8px 24px rgba(0,0,0,0.4),
     0 2px 0 rgba(255,255,255,0.9) inset;
 }
+.modal-panel::after {
+  content: "";
+  display: block;
+  height: 12px;
+  background: rgba(255,255,255,0.96);
+  flex-shrink: 0;
+}
 
 .modal-header {
   padding: 1.25rem 1.5rem;
@@ -1230,6 +1237,11 @@ body {
 /* ── MOBILE ── */
 @media (max-width: 600px) {
   .page-wrap { padding: 0 0 2rem; }
+  .status-bar,
+  .dash-tabs {
+    -webkit-mask-image: linear-gradient(to right, black 82%, transparent 100%);
+    mask-image: linear-gradient(to right, black 82%, transparent 100%);
+  }
   .panel-header,
   .status-bar,
   .dash-tabs,

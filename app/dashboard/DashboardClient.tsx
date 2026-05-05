@@ -444,7 +444,7 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                   value={modal.note}
                   onChange={e => setModal(m => m ? { ...m, note: e.target.value } : m)}
                   className="modal-textarea"
-                  placeholder="cole aqui o conteúdo, link, ou qualquer informação relevante..."
+                  placeholder="cole aqui o texto, link (Google Drive, Dropbox, etc.) ou qualquer informação relevante..."
                   rows={5}
                 />
               </div>
