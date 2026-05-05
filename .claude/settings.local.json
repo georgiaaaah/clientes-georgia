@@ -17,7 +17,9 @@
       "Bash(rtk tsc *)",
       "Bash(rtk npm *)",
       "Bash(supabase *)",
-      "PowerShell(Rename-Item *)"
+      "PowerShell(Rename-Item *)",
+      "Bash(powershell *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Projetos\" -Directory)"
     ]
   }
 }

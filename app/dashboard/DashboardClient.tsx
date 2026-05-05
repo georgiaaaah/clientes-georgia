@@ -341,7 +341,7 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                               </div>
 
                               {!isComplete && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexShrink: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexShrink: 0, paddingTop: '0.1rem' }}>
                                   <button
                                     onClick={() => openQuestion(item)}
                                     title="tirar dúvida sobre este item"

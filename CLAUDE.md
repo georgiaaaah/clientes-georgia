@@ -68,3 +68,7 @@ All CSS lives in `app/globals.css` (~1200 lines) — no CSS modules. Tailwind CS
 ### TypeScript
 
 Path alias `@/*` maps to the repo root. All shared types are in `lib/types.ts`.
+
+## Screenshots
+
+When the user references a screenshot or image without a full path, it is in `C:\Projetos\`.
