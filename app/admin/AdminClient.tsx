@@ -5,6 +5,7 @@ import type { CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import { SFX } from '@/lib/sfx'
 import type { Profile, Project, ChecklistItem } from '@/lib/types'
 import { STATUS_STEPS, CHECKLIST_DEFAULTS } from '@/lib/types'
 import { DesignSystemTab, EstruturaTab } from '@/app/components/DesignSystemTab'
@@ -83,6 +84,22 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
     ? STATUS_STEPS.findIndex(s => s.key === selectedProject.status)
     : -1
   const categories = Array.from(new Set(checklist.map(i => i.category)))
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      const btn = (e.target as HTMLElement).closest('button')
+      if (!btn) return
+      if (btn.classList.contains('led-check'))        SFX.toggle()
+      else if (btn.classList.contains('cta-btn'))     SFX.press()
+      else if (btn.classList.contains('btn-chassis')) SFX.press()
+      else if (btn.classList.contains('status-step')) SFX.press()
+      else if (btn.classList.contains('resubmit-btn')) SFX.click()
+      else if (btn.classList.contains('tab-btn'))     SFX.click()
+      else                                            SFX.click()
+    }
+    document.addEventListener('click', handleClick, true)
+    return () => document.removeEventListener('click', handleClick, true)
+  }, [])
 
   useEffect(() => {
     const saved = localStorage.getItem('admin-selected-project')

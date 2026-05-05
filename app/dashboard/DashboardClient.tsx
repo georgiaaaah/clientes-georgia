@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useTransition, useRef } from 'react'
+import { useState, useTransition, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import { SFX } from '@/lib/sfx'
 import type { Profile, Project, ChecklistItem } from '@/lib/types'
 import { STATUS_STEPS } from '@/lib/types'
 import { DesignSystemTab, EstruturaTab } from '@/app/components/DesignSystemTab'
@@ -37,6 +38,22 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
   const [, startTransition]               = useTransition()
   const fileInputRef                      = useRef<HTMLInputElement>(null)
   const router   = useRouter()
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      const btn = (e.target as HTMLElement).closest('button')
+      if (!btn) return
+      if (btn.classList.contains('led-check'))       SFX.toggle()
+      else if (btn.classList.contains('cta-btn'))    SFX.press()
+      else if (btn.classList.contains('btn-chassis')) SFX.press()
+      else if (btn.classList.contains('status-step')) SFX.press()
+      else if (btn.classList.contains('item-send-btn')) SFX.press()
+      else if (btn.classList.contains('tab-btn'))    SFX.click()
+      else                                           SFX.click()
+    }
+    document.addEventListener('click', handleClick, true)
+    return () => document.removeEventListener('click', handleClick, true)
+  }, [])
   const supabase = createClient()
   const isAdmin  = profile.role === 'admin'
 
