@@ -8,8 +8,8 @@ Guia completo para criar um portal cliente/admin do zero — ou adaptar este pro
 
 Um portal web com dois painéis:
 
-- **Painel cliente** (`/dashboard`) — o cliente faz login, vê o checklist de materiais, acompanha o andamento, envia arquivos, faz perguntas, comenta sobre entregas
-- **Painel admin** (`/admin`) — você gerencia todos os projetos: avança status, edita checklist, responde dúvidas, sobe HTML do design system e estrutura
+- **Painel cliente** (`/dashboard`) — o cliente faz login, vê o checklist de materiais, acompanha o andamento, envia arquivos, faz perguntas por item, comenta sobre entregas, aprova entregáveis
+- **Painel admin** (`/admin`) — você gerencia todos os projetos: avança status, edita checklist, responde dúvidas, envia arquivos ao cliente, sobe HTML do design system e estrutura
 
 **Stack:** Next.js (App Router) + Supabase (banco, auth, storage) + Tailwind v4 — hospedado na Vercel.
 
@@ -70,6 +70,17 @@ supabase db push
 
 Isso cria todas as tabelas, políticas RLS e o trigger de auto-criação de perfil.
 
+**Migrações existentes (em ordem):**
+
+| Arquivo | O que faz |
+|---|---|
+| `001_initial.sql` | Tabelas `profiles`, `projects`, `checklist_items`; RLS; trigger de perfil automático |
+| `002_project_html_urls.sql` | Colunas `design_system_url` e `estrutura_url` em `projects` |
+| `003_project_comments.sql` | Colunas `design_system_comment`, `estrutura_comment` em `projects` |
+| `004_checklist_item_question.sql` | Coluna `client_question` em `checklist_items` |
+| `005_question_reply.sql` | Coluna `admin_question_reply` em `checklist_items` |
+| `006_admin_file_url.sql` | Coluna `admin_file_url` em `checklist_items` |
+
 Se alguma migração falhar por "já existe", marque como aplicada:
 ```bash
 supabase migration repair <numero> --status applied
@@ -83,6 +94,15 @@ supabase db push
 No painel Supabase → Storage → New bucket:
 - Nome: `materiais`
 - Public: **sim**
+
+**Convenção de paths no bucket:**
+
+| Tipo de upload | Path |
+|---|---|
+| Arquivo enviado pelo cliente | `${projectId}/${itemId}/${timestamp}.${ext}` |
+| Arquivo enviado pelo admin | `${projectId}/${itemId}/admin.${ext}` |
+| HTML do design system | `${projectId}/design-system.html` |
+| HTML da estrutura | `${projectId}/estrutura.html` |
 
 ---
 
@@ -104,19 +124,22 @@ O UUID aparece na lista de usuários do Supabase.
 
 ### 7a. Identidade visual
 
-Todo o CSS está em `app/globals.css`. As variáveis de cor ficam no bloco `:root` no início do arquivo. O design vem do site principal da geōrgia — se for um portal com marca diferente, altere:
+Todo o CSS está em `app/globals.css`. As variáveis de cor ficam no bloco `:root` no início do arquivo. O design atual vem do site principal da geōrgia — se for um portal com marca diferente, altere:
 
 ```css
 :root {
-  --bg: /* cor de fundo */;
-  --chassis: /* cor dos painéis */;
-  --wood: /* cor lateral */;
-  --teal: /* cor de destaque */;
-  --grad-a: /* amarelo */;
-  --grad-b: /* vermelho */;
-  --grad-c: /* ciano */;
+  --bg:      /* cor de fundo da página */;
+  --chassis: /* cor dos painéis (chassi) */;
+  --wood:    /* cor das faixas laterais */;
+  --wood-w:  /* largura das faixas laterais (padrão: 28px) */;
+  --teal:    /* cor de destaque (ciano) */;
+  --grad-a:  /* amarelo do gradiente */;
+  --grad-b:  /* vermelho do gradiente */;
+  --grad-c:  /* ciano do gradiente */;
 }
 ```
+
+As faixas laterais (`--wood`) descem pela altura total do dispositivo (chassi + tela escura), recortadas pelo `border-radius` do `.device`. A largura é controlada por `--wood-w`.
 
 ### 7b. Status do projeto
 
@@ -128,11 +151,11 @@ Para mudar, edite `lib/types.ts`:
 export type ProjectStatus = 'briefing' | 'design' | 'desenvolvimento' | 'revisao' | 'entregue'
 
 export const STATUS_STEPS = [
-  { key: 'briefing',      label: 'briefing'      },
-  { key: 'design',        label: 'design'        },
+  { key: 'briefing',        label: 'briefing'        },
+  { key: 'design',          label: 'design'          },
   { key: 'desenvolvimento', label: 'desenvolvimento' },
-  { key: 'revisao',       label: 'revisão'       },
-  { key: 'entregue',      label: 'entregue'      },
+  { key: 'revisao',         label: 'revisão'         },
+  { key: 'entregue',        label: 'entregue'        },
 ]
 ```
 
@@ -154,13 +177,17 @@ As abas ficam em `app/dashboard/DashboardClient.tsx`. As abas atuais são:
 | `estrutura` | Admin sobe HTML da estrutura; cliente comenta |
 | `aprovações` | Cliente aprova ou pede ajustes nos entregáveis |
 
-Para remover uma aba que não faz sentido para o contexto do cliente, apague o botão de tab correspondente e o bloco de conteúdo associado no `DashboardClient.tsx`. Faça o mesmo no `AdminClient.tsx` para o painel admin.
+Para remover uma aba que não faz sentido para o contexto do cliente, apague o botão de tab correspondente e o bloco de conteúdo associado no `DashboardClient.tsx`. Faça o mesmo no `AdminClient.tsx`.
 
 Para adicionar uma aba nova, siga o padrão das existentes: botão no header + bloco `{activeTab === 'nome' && (...)}` no corpo.
 
 ### 7d. Checklist padrão (quando não há markdown customizado)
 
 Se quiser um checklist padrão diferente para novas instalações, edite `CHECKLIST_DEFAULTS` em `lib/types.ts`. Na prática, para clientes específicos você vai usar o script (veja seção abaixo).
+
+### 7e. Texto de ajuda do cliente
+
+O modal `?` no painel do cliente (botão ao lado de "sair") contém instruções estáticas sobre como usar o portal. Se mudar abas ou fluxo, atualize o texto em `DashboardClient.tsx` na função que renderiza o modal com `helpOpen`.
 
 ---
 
@@ -193,13 +220,38 @@ Veja o arquivo `checklists dos clientes/COMO-USAR.md` para o passo a passo compl
 Resumo:
 1. Crie o usuário cliente no Supabase → Authentication
 2. Escreva o checklist em markdown (formato `## Categoria / - item`)
-3. Rode o script:
+3. Rode o script no Claude Code:
 
 ```
 ! node --experimental-strip-types --env-file=.env.local scripts/set-checklist.ts "email@cliente.com" "checklists dos clientes/NomeCliente.md"
 ```
 
 O script cria o projeto automaticamente se não existir.
+
+---
+
+## Fluxo de comunicação dentro do portal
+
+Entender o fluxo de troca de informações ajuda a decidir o que adaptar num novo contexto:
+
+```
+Cliente                          Admin (você)
+──────                           ────────────
+↑ envia arquivo ou texto         vê o arquivo + nota
+? faz pergunta por item          vê badge amarelo no seletor de projetos
+                                 ↓ responde a pergunta (inline)
+vê resposta na caixa amarela
+                                 ↓ envia arquivo ao cliente (botão ↓)
+vê "↗ arquivo de geōrgia"
+                                 ↵ pede reenvio com nota
+vê notificação amarela ⚠
+↑ reenvia material
+                                 ✓ confirma recebimento (LED azul acende)
+vê LED azul aceso (confirmado)
+comenta no design system/estrutura
+                                 vê observação do cliente
+aprova ou solicita ajuste        vê resposta do cliente
+```
 
 ---
 
@@ -217,16 +269,43 @@ A regra é: abas e status são só texto e condicionais no código — mudam em 
 
 ---
 
+## Resolução de problemas comuns
+
+**Migração falha com "already exists"**
+```bash
+supabase migration repair <numero> --status applied
+supabase db push
+```
+
+**Script `set-checklist.ts` não executa**
+Use `node --experimental-strip-types` (não `npx tsx`, que pode não estar instalado):
+```
+! node --experimental-strip-types --env-file=.env.local scripts/set-checklist.ts ...
+```
+
+**Mudanças não aparecem na Vercel**
+Verifique se o commit foi feito e empurrado: `git push`. A Vercel só deploya após o push — alterações locais não sobem automaticamente.
+
+**Usuário não consegue fazer login**
+Confirme que o perfil existe na tabela `profiles`. Se não existir (erro no trigger), insira manualmente:
+```sql
+insert into profiles (id, name, role)
+values ('<uuid-do-usuario>', 'Nome', 'client');
+```
+
+---
+
 ## Referência rápida de arquivos
 
 | Arquivo | O que controla |
 |---|---|
 | `lib/types.ts` | Tipos, STATUS_STEPS, CHECKLIST_DEFAULTS |
-| `app/globals.css` | Todo o CSS (cores, layout, motif visual) |
-| `app/dashboard/DashboardClient.tsx` | Painel do cliente (abas, checklist, modais) |
-| `app/admin/AdminClient.tsx` | Painel admin (projetos, edição de checklist, respostas) |
+| `app/globals.css` | Todo o CSS (cores, layout, motif visual, mobile) |
+| `app/dashboard/DashboardClient.tsx` | Painel do cliente (abas, checklist, modais, ajuda) |
+| `app/admin/AdminClient.tsx` | Painel admin (projetos, checklist, badges, respostas) |
 | `app/components/DesignSystemTab.tsx` | Aba genérica de HTML (design system e estrutura) |
 | `app/components/ApprovalsTab.tsx` | Aba de aprovações |
 | `scripts/set-checklist.ts` | Script CLI para criar checklist por markdown |
-| `supabase/migrations/` | Histórico completo do banco |
+| `supabase/migrations/` | Histórico completo do banco (001 a 006) |
 | `checklists dos clientes/` | Arquivos markdown dos checklists de cada cliente |
+| `COMO-USAR.md` (em `checklists dos clientes/`) | Passo a passo para onboarding de novo cliente |
