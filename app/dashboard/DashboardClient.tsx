@@ -33,6 +33,7 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
   const [questionItem, setQuestionItem]   = useState<ChecklistItem | null>(null)
   const [questionText, setQuestionText]   = useState('')
   const [questionSaving, setQuestionSaving] = useState(false)
+  const [helpOpen, setHelpOpen]           = useState(false)
   const [, startTransition]               = useTransition()
   const fileInputRef                      = useRef<HTMLInputElement>(null)
   const router   = useRouter()
@@ -163,9 +164,21 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
                 </div>
               </div>
             )}
-            <button className="btn-chassis" onClick={handleLogout} style={{ padding: '0.4rem 0.9rem', fontSize: '0.6rem', marginLeft: 'auto', flexShrink: 0 }}>
-              sair
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto', flexShrink: 0 }}>
+              {!isAdmin && (
+                <button
+                  className="btn-chassis"
+                  onClick={() => setHelpOpen(true)}
+                  style={{ padding: '0.4rem 0.7rem', fontSize: '0.7rem', fontWeight: 600 }}
+                  title="como usar o painel"
+                >
+                  ?
+                </button>
+              )}
+              <button className="btn-chassis" onClick={handleLogout} style={{ padding: '0.4rem 0.9rem', fontSize: '0.6rem' }}>
+                sair
+              </button>
+            </div>
           </div>
 
           {project && (
@@ -362,6 +375,62 @@ export function DashboardClient({ profile, project, checklist: initial }: Props)
           </div>
         </div>
       </div>
+
+      {/* ── MODAL AJUDA ── */}
+      {helpOpen && (
+        <div className="modal-overlay" onClick={() => setHelpOpen(false)}>
+          <div className="modal-panel" onClick={e => e.stopPropagation()} style={{ maxWidth: '480px' }}>
+            <div className="modal-header">
+              <span className="modal-title">como usar o painel</span>
+              <button className="modal-close" onClick={() => setHelpOpen(false)}>✕</button>
+            </div>
+            <div className="modal-body" style={{ gap: '1.25rem' }}>
+
+              <div>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(8,236,243,0.7)', marginBottom: '0.5rem' }}>abas e etapas</p>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'rgba(240,241,241,0.7)', lineHeight: 1.7 }}>
+                  Na parte superior há duas faixas deslizantes — deslize para os lados para ver todas as abas e todas as etapas do projeto.
+                </p>
+              </div>
+
+              <div>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(8,236,243,0.7)', marginBottom: '0.5rem' }}>aba materiais</p>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'rgba(240,241,241,0.7)', lineHeight: 1.7 }}>
+                  Lista de tudo que precisa ser enviado. Para cada item, clique em <strong style={{ color: 'rgba(240,241,241,0.9)' }}>↑ enviar</strong> para fazer upload de um arquivo ou colar um texto. Após o envio, o LED do lado esquerdo acende. Quando geōrgia confirmar o recebimento, o LED amarelo também acende.
+                </p>
+              </div>
+
+              <div>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(8,236,243,0.7)', marginBottom: '0.5rem' }}>dúvidas por item</p>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'rgba(240,241,241,0.7)', lineHeight: 1.7 }}>
+                  Cada item tem um botão <strong style={{ color: 'rgba(240,241,241,0.9)' }}>?</strong> — use para tirar dúvidas específicas sobre aquele material. A resposta de geōrgia aparecerá no mesmo item.
+                </p>
+              </div>
+
+              <div>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(8,236,243,0.7)', marginBottom: '0.5rem' }}>design system e estrutura</p>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'rgba(240,241,241,0.7)', lineHeight: 1.7 }}>
+                  Quando geōrgia subir uma entrega nessas abas, você poderá visualizar e deixar observações usando o botão <strong style={{ color: 'rgba(240,241,241,0.9)' }}>comentar</strong>.
+                </p>
+              </div>
+
+              <div>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(8,236,243,0.7)', marginBottom: '0.5rem' }}>aprovações</p>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'rgba(240,241,241,0.7)', lineHeight: 1.7 }}>
+                  Nesta aba você aprova ou solicita ajustes nas entregas finais. Cada entregável tem um status próprio.
+                </p>
+              </div>
+
+            </div>
+            <div className="modal-footer">
+              <button className="cta-btn" onClick={() => setHelpOpen(false)}>
+                <span className="cta-led" />
+                <span className="cta-label">entendido</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── MODAL ENVIAR MATERIAL ── */}
       {modal && (
