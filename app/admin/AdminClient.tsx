@@ -549,7 +549,7 @@ export function AdminClient({ adminProfile, projects: initialProjects, clients, 
                                           onChange={e => setReplyText(e.target.value)}
                                           onKeyDown={e => { if (e.key === 'Enter') sendReply(item.id); if (e.key === 'Escape') setReplyingTo(null) }}
                                           placeholder="sua resposta..."
-                                          style={{ ...inlineInput, fontSize: '0.68rem' }}
+                                          style={{ ...inlineInput, fontSize: '0.68rem', color: 'rgba(240,241,241,0.9)' }}
                                         />
                                         <button onClick={() => sendReply(item.id)} disabled={replySaving || !replyText.trim()} style={confirmBtn}>{replySaving ? '...' : '✓'}</button>
                                         <button onClick={() => setReplyingTo(null)} style={cancelBtn}>✕</button>
